@@ -5,22 +5,16 @@
 
 /* CSS Variables */
 :root {
-    /* Brand Colors - Extracted from PayoutMate Logo */
-    --color-primary: #2563EB;          /* Electric Blue - Trust, stability */
-    --color-primary-dark: #1D4ED8;     /* Darker blue for hover states */
-    --color-primary-light: #3B82F6;    /* Lighter blue for accents */
-    --color-primary-bg: #EFF6FF;       /* Blue tinted background */
+    /* Colors */
+    --color-primary: #0D9488;
+    --color-primary-dark: #0F766E;
+    --color-primary-light: #14B8A6;
+    --color-primary-bg: #F0FDFA;
 
-    --color-accent: #00FF7F;           /* Neon Green - Growth, money, success */
-    --color-accent-dark: #00E070;      /* Darker green for hover */
-    --color-accent-light: #22FF8F;     /* Lighter green for highlights */
-    --color-accent-bg: #ECFDF5;        /* Green tinted background */
-
-    /* Dark Mode Optimized Neutrals */
-    --color-secondary: #0F172A;        /* Deep navy - sophisticated dark */
-    --color-text: #1E293B;
-    --color-text-light: #475569;
-    --color-text-muted: #64748B;
+    --color-secondary: #1E293B;
+    --color-text: #334155;
+    --color-text-light: #64748B;
+    --color-text-muted: #94A3B8;
 
     --color-white: #FFFFFF;
     --color-background: #FFFFFF;
@@ -28,7 +22,7 @@
     --color-border: #E2E8F0;
     --color-border-light: #F1F5F9;
 
-    --color-success: #00FF7F;          /* Using accent green for success */
+    --color-success: #10B981;
     --color-success-bg: #ECFDF5;
     --color-warning: #F59E0B;
     --color-warning-bg: #FFFBEB;
@@ -137,45 +131,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-gradient {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-.text-accent {
-    color: var(--color-accent) !important;
-}
-
 .text-success {
     color: var(--color-success) !important;
-}
-
-/* Brand Logo Styling */
-.brand-logo {
-    height: 40px;
-    width: auto;
-    object-fit: contain;
-}
-
-.brand-logo-large {
-    height: 48px;
-    width: auto;
-}
-
-/* Split-color brand name typography */
-.brand-name {
-    font-weight: 800;
-    font-size: var(--font-size-xl);
-    letter-spacing: -0.02em;
-}
-
-.brand-name .blue {
-    color: var(--color-primary);
-}
-
-.brand-name .green {
-    color: var(--color-accent);
 }
 
 /* Buttons */
@@ -196,29 +159,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    background: var(--color-primary);
     color: var(--color-white);
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
-}
-
-/* Accent variant for special CTAs */
-.btn-accent {
-    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
-    color: var(--color-secondary);
-    font-weight: 700;
-    box-shadow: 0 4px 14px rgba(0, 255, 127, 0.3);
-}
-
-.btn-accent:hover {
-    background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 255, 127, 0.4);
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
@@ -375,10 +323,9 @@ h1, h2, h3, h4, h5, h6 {
 .badge-dot {
     width: 8px;
     height: 8px;
-    background: var(--color-accent);
+    background: var(--color-primary);
     border-radius: 50%;
     animation: pulse 2s infinite;
-    box-shadow: 0 0 8px rgba(0, 255, 127, 0.6);
 }
 
 @keyframes pulse {
@@ -403,9 +350,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-subtitle strong {
-    color: var(--color-accent);
+    color: var(--color-primary);
     font-weight: 600;
-    text-shadow: 0 0 20px rgba(0, 255, 127, 0.3);
 }
 
 .hero-cta {
@@ -549,9 +495,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .dashboard-card.highlight {
-    background: linear-gradient(135deg, var(--color-primary-bg) 0%, var(--color-accent-bg) 100%);
+    background: var(--color-primary-bg);
     border-color: var(--color-primary);
-    border-left: 3px solid var(--color-accent);
 }
 
 .card-header {
@@ -793,7 +738,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .feature-card:hover {
     border-color: var(--color-primary);
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15), 0 4px 10px rgba(0, 255, 127, 0.1);
+    box-shadow: var(--shadow-lg);
     transform: translateY(-4px);
 }
 
@@ -848,7 +793,7 @@ h1, h2, h3, h4, h5, h6 {
 .step-number {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    background: var(--color-primary);
     color: var(--color-white);
     border-radius: var(--radius-full);
     display: flex;
@@ -857,7 +802,6 @@ h1, h2, h3, h4, h5, h6 {
     font-size: var(--font-size-xl);
     font-weight: 700;
     margin: 0 auto var(--spacing-4);
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 .step-card h3 {
@@ -999,9 +943,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .check {
-    color: var(--color-accent);
+    color: var(--color-success);
     font-size: var(--font-size-lg);
-    text-shadow: 0 0 8px rgba(0, 255, 127, 0.4);
 }
 
 .cross {
@@ -1041,9 +984,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .pricing-card.featured {
     border-color: var(--color-primary);
-    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15), 0 8px 16px rgba(0, 255, 127, 0.1);
+    box-shadow: var(--shadow-xl);
     transform: scale(1.05);
-    background: linear-gradient(180deg, var(--color-white) 0%, var(--color-primary-bg) 100%);
 }
 
 .pricing-badge {
@@ -1051,13 +993,12 @@ h1, h2, h3, h4, h5, h6 {
     top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
-    color: var(--color-secondary);
+    background: var(--color-primary);
+    color: var(--color-white);
     padding: var(--spacing-1) var(--spacing-4);
     border-radius: var(--radius-full);
     font-size: var(--font-size-xs);
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0, 255, 127, 0.3);
+    font-weight: 600;
 }
 
 .pricing-header {
@@ -1144,40 +1085,13 @@ h1, h2, h3, h4, h5, h6 {
    ============================================ */
 .cta-section {
     padding: var(--spacing-24) 0;
-    background: linear-gradient(135deg, var(--color-secondary) 0%, #020617 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Subtle accent glow for dark sections */
-.cta-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -25%;
-    width: 50%;
-    height: 200%;
-    background: radial-gradient(ellipse, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
-    pointer-events: none;
-}
-
-.cta-section::after {
-    content: '';
-    position: absolute;
-    bottom: -50%;
-    right: -25%;
-    width: 50%;
-    height: 200%;
-    background: radial-gradient(ellipse, rgba(0, 255, 127, 0.1) 0%, transparent 70%);
-    pointer-events: none;
+    background: linear-gradient(135deg, var(--color-secondary) 0%, #0F172A 100%);
 }
 
 .cta-content {
     text-align: center;
     max-width: 600px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
 }
 
 .cta-title {
@@ -1245,8 +1159,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cta-feature svg {
-    color: var(--color-accent);
-    filter: drop-shadow(0 0 8px rgba(0, 255, 127, 0.5));
+    color: var(--color-primary);
 }
 
 /* ============================================
@@ -1254,18 +1167,8 @@ h1, h2, h3, h4, h5, h6 {
    ============================================ */
 .footer {
     padding: var(--spacing-16) 0 var(--spacing-8);
-    background: linear-gradient(180deg, var(--color-secondary) 0%, #020617 100%);
+    background: var(--color-secondary);
     color: var(--color-white);
-    position: relative;
-}
-
-.footer .brand-name .blue {
-    color: var(--color-primary-light);
-}
-
-.footer .brand-name .green {
-    color: var(--color-accent);
-    text-shadow: 0 0 30px rgba(0, 255, 127, 0.4);
 }
 
 .footer-grid {
