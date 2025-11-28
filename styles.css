@@ -86,11 +86,12 @@
     --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.6);
     --shadow-glow: 0 0 60px rgba(37, 99, 235, 0.15);
 
-    /* Transitions */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* Transitions - Refined for neo-minimal feel */
+    --transition-fast: 180ms cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-base: 280ms cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-slow: 450ms cubic-bezier(0.25, 0.1, 0.25, 1);
     --transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-smooth: 350ms cubic-bezier(0.4, 0, 0, 1);
 
     /* Container */
     --container-max: 1200px;
@@ -287,7 +288,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================
-   Navigation
+   Navigation - Neo-Minimal Glass Aesthetic
    ============================================ */
 .navbar {
     position: fixed;
@@ -295,18 +296,20 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     z-index: 1000;
-    background: rgba(10, 10, 15, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--color-border-subtle);
+    background: rgba(12, 12, 16, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .nav-container {
     max-width: var(--container-max);
     margin: 0 auto;
-    padding: var(--space-4) var(--container-padding);
+    padding: var(--space-3) var(--container-padding);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-6);
 }
 
 .logo {
@@ -317,10 +320,15 @@ h1, h2, h3, h4, h5, h6 {
     font-size: var(--text-xl);
     font-weight: 600;
     color: var(--color-text);
+    transition: opacity var(--transition-fast);
+}
+
+.logo:hover {
+    opacity: 0.85;
 }
 
 .logo-img {
-    height: 40px;
+    height: 32px;
     width: auto;
 }
 
@@ -328,6 +336,96 @@ h1, h2, h3, h4, h5, h6 {
     height: 36px;
 }
 
+/* Nav Links Wrapper - Centered */
+.nav-links-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* Nav Links Pill Container */
+.nav-links-pill {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-base);
+}
+
+.nav-links-pill:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-links-pill a {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.nav-links-pill a:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Nav Actions - Right Side */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.nav-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.nav-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--color-text);
+}
+
+.btn-nav-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2) var(--space-5);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.btn-nav-primary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Legacy nav-links support */
 .nav-links {
     display: flex;
     align-items: center;
@@ -364,6 +462,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 24px;
     height: 2px;
     background: var(--color-text);
+    border-radius: 2px;
     transition: all var(--transition-fast);
 }
 
@@ -371,7 +470,7 @@ h1, h2, h3, h4, h5, h6 {
    Hero Section
    ============================================ */
 .hero {
-    padding-top: calc(80px + var(--space-20));
+    padding-top: calc(72px + var(--space-20));
     padding-bottom: var(--space-20);
     position: relative;
 }
@@ -1460,19 +1559,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================
-   Animations
+   Animations - Refined Neo-Minimal Transitions
    ============================================ */
 .animate-item {
     opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(24px);
+    animation: fadeInUp 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
-.animate-item:nth-child(1) { animation-delay: 0.1s; }
-.animate-item:nth-child(2) { animation-delay: 0.2s; }
-.animate-item:nth-child(3) { animation-delay: 0.3s; }
-.animate-item:nth-child(4) { animation-delay: 0.4s; }
-.animate-item:nth-child(5) { animation-delay: 0.5s; }
+.animate-item:nth-child(1) { animation-delay: 0.05s; }
+.animate-item:nth-child(2) { animation-delay: 0.12s; }
+.animate-item:nth-child(3) { animation-delay: 0.19s; }
+.animate-item:nth-child(4) { animation-delay: 0.26s; }
+.animate-item:nth-child(5) { animation-delay: 0.33s; }
 
 @keyframes fadeInUp {
     to {
@@ -1484,13 +1583,24 @@ h1, h2, h3, h4, h5, h6 {
 /* Scroll-triggered animations */
 [data-animate] {
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transform: translateY(28px);
+    transition: opacity 0.55s cubic-bezier(0.25, 0.1, 0.25, 1),
+                transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 [data-animate].visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Smooth hover state transitions for cards */
+.feature-card,
+.problem-card,
+.testimonial-card,
+.pricing-card {
+    transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
+                border-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
+                box-shadow 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* ============================================
@@ -1500,6 +1610,16 @@ h1, h2, h3, h4, h5, h6 {
     :root {
         --text-6xl: 3.5rem;
         --text-5xl: 2.75rem;
+    }
+
+    .nav-links-pill {
+        gap: 0;
+        padding: var(--space-1);
+    }
+
+    .nav-links-pill a {
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-xs);
     }
 
     .features-grid,
@@ -1531,7 +1651,9 @@ h1, h2, h3, h4, h5, h6 {
         --container-padding: 1.5rem;
     }
 
-    .nav-links {
+    .nav-links,
+    .nav-links-wrapper,
+    .nav-actions {
         display: none;
     }
 
