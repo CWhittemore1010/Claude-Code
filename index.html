@@ -90,24 +90,26 @@
                 </div>
                 <div class="dashboard-content">
                     <div class="dashboard-sidebar">
-                        <div class="sidebar-item active">
+                        <div class="sidebar-item active" data-tab="dashboard">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                             Dashboard
                         </div>
-                        <div class="sidebar-item">
+                        <div class="sidebar-item" data-tab="contractors">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             Contractors
                         </div>
-                        <div class="sidebar-item">
+                        <div class="sidebar-item" data-tab="payments">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                             Payments
                         </div>
-                        <div class="sidebar-item">
+                        <div class="sidebar-item" data-tab="compliance">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             Compliance
                         </div>
                     </div>
-                    <div class="dashboard-main">
+
+                    <!-- Dashboard Panel -->
+                    <div class="dashboard-main dashboard-panel active" data-panel="dashboard">
                         <div class="dashboard-card">
                             <div class="card-header">
                                 <span>Active Contractors</span>
@@ -158,6 +160,403 @@
                                 </div>
                                 <div class="row-amount">$1,800</div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Contractors Panel -->
+                    <div class="dashboard-main dashboard-panel" data-panel="contractors">
+                        <div class="panel-header-row">
+                            <h3 class="panel-title">Contractors</h3>
+                            <button class="btn-small btn-primary-small">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Add New
+                            </button>
+                        </div>
+                        <div class="contractors-filter-row">
+                            <div class="filter-tabs">
+                                <span class="filter-tab active">All (47)</span>
+                                <span class="filter-tab">Active (42)</span>
+                                <span class="filter-tab">Pending (5)</span>
+                            </div>
+                            <div class="search-box">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                                <input type="text" placeholder="Search contractors...">
+                            </div>
+                        </div>
+                        <div class="contractors-list">
+                            <div class="contractor-row">
+                                <div class="contractor-info">
+                                    <div class="row-avatar">JD</div>
+                                    <div class="contractor-details">
+                                        <span class="contractor-name">Jane Doe</span>
+                                        <span class="contractor-role">UI/UX Designer</span>
+                                    </div>
+                                </div>
+                                <div class="contractor-meta">
+                                    <span class="contractor-rate">$85/hr</span>
+                                    <span class="contractor-status active">Active</span>
+                                </div>
+                                <div class="contractor-ytd">
+                                    <span class="ytd-label">YTD</span>
+                                    <span class="ytd-amount">$24,500</span>
+                                </div>
+                                <div class="contractor-actions">
+                                    <button class="action-btn" title="View Profile">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </button>
+                                    <button class="action-btn" title="Send Payment">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="contractor-row">
+                                <div class="contractor-info">
+                                    <div class="row-avatar blue">MS</div>
+                                    <div class="contractor-details">
+                                        <span class="contractor-name">Mike Smith</span>
+                                        <span class="contractor-role">Full Stack Developer</span>
+                                    </div>
+                                </div>
+                                <div class="contractor-meta">
+                                    <span class="contractor-rate">$120/hr</span>
+                                    <span class="contractor-status active">Active</span>
+                                </div>
+                                <div class="contractor-ytd">
+                                    <span class="ytd-label">YTD</span>
+                                    <span class="ytd-amount">$45,200</span>
+                                </div>
+                                <div class="contractor-actions">
+                                    <button class="action-btn" title="View Profile">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </button>
+                                    <button class="action-btn" title="Send Payment">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="contractor-row">
+                                <div class="contractor-info">
+                                    <div class="row-avatar purple">AL</div>
+                                    <div class="contractor-details">
+                                        <span class="contractor-name">Amy Lee</span>
+                                        <span class="contractor-role">Content Writer</span>
+                                    </div>
+                                </div>
+                                <div class="contractor-meta">
+                                    <span class="contractor-rate">$65/hr</span>
+                                    <span class="contractor-status active">Active</span>
+                                </div>
+                                <div class="contractor-ytd">
+                                    <span class="ytd-label">YTD</span>
+                                    <span class="ytd-amount">$18,750</span>
+                                </div>
+                                <div class="contractor-actions">
+                                    <button class="action-btn" title="View Profile">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </button>
+                                    <button class="action-btn" title="Send Payment">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="contractor-row">
+                                <div class="contractor-info">
+                                    <div class="row-avatar orange">TC</div>
+                                    <div class="contractor-details">
+                                        <span class="contractor-name">Tom Chen</span>
+                                        <span class="contractor-role">DevOps Engineer</span>
+                                    </div>
+                                </div>
+                                <div class="contractor-meta">
+                                    <span class="contractor-rate">$110/hr</span>
+                                    <span class="contractor-status pending">Pending W-9</span>
+                                </div>
+                                <div class="contractor-ytd">
+                                    <span class="ytd-label">YTD</span>
+                                    <span class="ytd-amount">$0</span>
+                                </div>
+                                <div class="contractor-actions">
+                                    <button class="action-btn" title="View Profile">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </button>
+                                    <button class="action-btn disabled" title="W-9 Required">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payments Panel -->
+                    <div class="dashboard-main dashboard-panel" data-panel="payments">
+                        <div class="panel-header-row">
+                            <h3 class="panel-title">Payments</h3>
+                            <button class="btn-small btn-primary-small">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                New Payment
+                            </button>
+                        </div>
+                        <div class="payments-summary">
+                            <div class="summary-card">
+                                <div class="summary-icon pending-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                </div>
+                                <div class="summary-content">
+                                    <span class="summary-value">$12,450</span>
+                                    <span class="summary-label">Pending Approval</span>
+                                </div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-icon scheduled-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                </div>
+                                <div class="summary-content">
+                                    <span class="summary-value">$8,200</span>
+                                    <span class="summary-label">Scheduled</span>
+                                </div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-icon completed-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                </div>
+                                <div class="summary-content">
+                                    <span class="summary-value">$124,500</span>
+                                    <span class="summary-label">Paid This Month</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payments-section">
+                            <div class="section-subheader">
+                                <span>Pending Approval</span>
+                                <button class="btn-text">Approve All</button>
+                            </div>
+                            <div class="payment-row pending-payment">
+                                <div class="payment-info">
+                                    <div class="row-avatar">JD</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Jane Doe</span>
+                                        <span class="payment-desc">Website Redesign - Phase 2</span>
+                                    </div>
+                                </div>
+                                <div class="payment-amount">$2,500</div>
+                                <div class="payment-actions">
+                                    <button class="approve-btn">Approve</button>
+                                    <button class="reject-btn">Reject</button>
+                                </div>
+                            </div>
+                            <div class="payment-row pending-payment">
+                                <div class="payment-info">
+                                    <div class="row-avatar blue">MS</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Mike Smith</span>
+                                        <span class="payment-desc">API Integration - Sprint 4</span>
+                                    </div>
+                                </div>
+                                <div class="payment-amount">$6,200</div>
+                                <div class="payment-actions">
+                                    <button class="approve-btn">Approve</button>
+                                    <button class="reject-btn">Reject</button>
+                                </div>
+                            </div>
+                            <div class="payment-row pending-payment">
+                                <div class="payment-info">
+                                    <div class="row-avatar purple">AL</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Amy Lee</span>
+                                        <span class="payment-desc">Blog Posts (10 articles)</span>
+                                    </div>
+                                </div>
+                                <div class="payment-amount">$3,750</div>
+                                <div class="payment-actions">
+                                    <button class="approve-btn">Approve</button>
+                                    <button class="reject-btn">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payments-section">
+                            <div class="section-subheader">
+                                <span>Recent Payments</span>
+                                <button class="btn-text">View All</button>
+                            </div>
+                            <div class="payment-row completed-payment">
+                                <div class="payment-info">
+                                    <div class="row-avatar blue">MS</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Mike Smith</span>
+                                        <span class="payment-desc">Nov 25, 2025</span>
+                                    </div>
+                                </div>
+                                <div class="payment-amount">$4,800</div>
+                                <div class="payment-status-badge success">Paid</div>
+                            </div>
+                            <div class="payment-row completed-payment">
+                                <div class="payment-info">
+                                    <div class="row-avatar">JD</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Jane Doe</span>
+                                        <span class="payment-desc">Nov 22, 2025</span>
+                                    </div>
+                                </div>
+                                <div class="payment-amount">$1,850</div>
+                                <div class="payment-status-badge success">Paid</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Panel -->
+                    <div class="dashboard-main dashboard-panel" data-panel="compliance">
+                        <div class="panel-header-row">
+                            <h3 class="panel-title">Compliance Center</h3>
+                            <div class="compliance-score-badge">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                100% Compliant
+                            </div>
+                        </div>
+                        <div class="compliance-overview">
+                            <div class="compliance-stat-card">
+                                <div class="compliance-stat-header">
+                                    <span class="compliance-stat-title">W-9 Collection</span>
+                                    <span class="compliance-stat-badge success">Complete</span>
+                                </div>
+                                <div class="compliance-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                    <span class="progress-text">47/47 collected</span>
+                                </div>
+                            </div>
+                            <div class="compliance-stat-card">
+                                <div class="compliance-stat-header">
+                                    <span class="compliance-stat-title">TIN Verification</span>
+                                    <span class="compliance-stat-badge success">Verified</span>
+                                </div>
+                                <div class="compliance-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                    <span class="progress-text">47/47 verified with IRS</span>
+                                </div>
+                            </div>
+                            <div class="compliance-stat-card">
+                                <div class="compliance-stat-header">
+                                    <span class="compliance-stat-title">1099-NEC Filing</span>
+                                    <span class="compliance-stat-badge info">Ready</span>
+                                </div>
+                                <div class="compliance-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill ready" style="width: 85%"></div>
+                                    </div>
+                                    <span class="progress-text">38 contractors over $600 threshold</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="compliance-section">
+                            <div class="section-subheader">
+                                <span>Contractor Compliance Status</span>
+                                <button class="btn-text">Export Report</button>
+                            </div>
+                            <div class="compliance-list">
+                                <div class="compliance-row">
+                                    <div class="compliance-contractor">
+                                        <div class="row-avatar">JD</div>
+                                        <span class="compliance-name">Jane Doe</span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">W-9</span>
+                                        <span class="item-status success">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">TIN</span>
+                                        <span class="item-status success">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">1099</span>
+                                        <span class="item-status ready">Ready</span>
+                                    </div>
+                                    <div class="compliance-ytd">$24,500</div>
+                                </div>
+                                <div class="compliance-row">
+                                    <div class="compliance-contractor">
+                                        <div class="row-avatar blue">MS</div>
+                                        <span class="compliance-name">Mike Smith</span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">W-9</span>
+                                        <span class="item-status success">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">TIN</span>
+                                        <span class="item-status success">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">1099</span>
+                                        <span class="item-status ready">Ready</span>
+                                    </div>
+                                    <div class="compliance-ytd">$45,200</div>
+                                </div>
+                                <div class="compliance-row">
+                                    <div class="compliance-contractor">
+                                        <div class="row-avatar purple">AL</div>
+                                        <span class="compliance-name">Amy Lee</span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">W-9</span>
+                                        <span class="item-status success">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">TIN</span>
+                                        <span class="item-status success">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">1099</span>
+                                        <span class="item-status ready">Ready</span>
+                                    </div>
+                                    <div class="compliance-ytd">$18,750</div>
+                                </div>
+                                <div class="compliance-row">
+                                    <div class="compliance-contractor">
+                                        <div class="row-avatar orange">TC</div>
+                                        <span class="compliance-name">Tom Chen</span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">W-9</span>
+                                        <span class="item-status warning">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                        </span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">TIN</span>
+                                        <span class="item-status pending">Pending</span>
+                                    </div>
+                                    <div class="compliance-item">
+                                        <span class="item-label">1099</span>
+                                        <span class="item-status na">N/A</span>
+                                    </div>
+                                    <div class="compliance-ytd">$0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="compliance-actions-bar">
+                            <button class="btn-small btn-secondary-small">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Download W-9s
+                            </button>
+                            <button class="btn-small btn-primary-small">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                Preview 1099s
+                            </button>
                         </div>
                     </div>
                 </div>

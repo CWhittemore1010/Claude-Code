@@ -124,7 +124,171 @@ document.addEventListener('DOMContentLoaded', function() {
     addStaggerDelay('.feature-card', 0.1);
     addStaggerDelay('.testimonial-card', 0.15);
     addStaggerDelay('.pricing-card', 0.1);
+
+    // Dashboard Tab Navigation
+    initDashboardTabs();
 });
+
+/**
+ * Initialize Dashboard Tab Navigation
+ */
+function initDashboardTabs() {
+    const sidebarItems = document.querySelectorAll('.sidebar-item[data-tab]');
+    const panels = document.querySelectorAll('.dashboard-panel[data-panel]');
+
+    if (sidebarItems.length === 0 || panels.length === 0) return;
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+
+            // Remove active class from all sidebar items
+            sidebarItems.forEach(si => si.classList.remove('active'));
+
+            // Add active class to clicked item
+            this.classList.add('active');
+
+            // Hide all panels
+            panels.forEach(panel => {
+                panel.classList.remove('active');
+            });
+
+            // Show target panel
+            const targetPanel = document.querySelector(`.dashboard-panel[data-panel="${targetTab}"]`);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+        });
+    });
+
+    // Filter Tabs for Contractors Panel
+    initFilterTabs();
+
+    // Payment Approve/Reject Buttons
+    initPaymentActions();
+}
+
+/**
+ * Initialize Filter Tabs (All/Active/Pending)
+ */
+function initFilterTabs() {
+    const filterTabs = document.querySelectorAll('.filter-tab');
+
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all filter tabs
+            filterTabs.forEach(ft => ft.classList.remove('active'));
+
+            // Add active class to clicked tab
+            this.classList.add('active');
+
+            // Here you would filter the contractor list based on the selected tab
+            // For demo purposes, we're just toggling the active state
+        });
+    });
+}
+
+/**
+ * Initialize Payment Action Buttons (Approve/Reject)
+ */
+function initPaymentActions() {
+    const approveButtons = document.querySelectorAll('.approve-btn');
+    const rejectButtons = document.querySelectorAll('.reject-btn');
+
+    approveButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const paymentRow = this.closest('.payment-row');
+            if (paymentRow) {
+                // Animate the approval
+                paymentRow.style.transition = 'all 0.3s ease';
+                paymentRow.style.backgroundColor = '#ECFDF5';
+                paymentRow.style.borderColor = '#10B981';
+
+                // Replace buttons with status badge
+                const actionsDiv = paymentRow.querySelector('.payment-actions');
+                if (actionsDiv) {
+                    actionsDiv.innerHTML = '<span class="payment-status-badge success">Approved</span>';
+                }
+
+                // Optionally remove after animation
+                setTimeout(() => {
+                    paymentRow.style.opacity = '0';
+                    paymentRow.style.transform = 'translateX(20px)';
+                    setTimeout(() => {
+                        paymentRow.remove();
+                        updatePendingCount();
+                    }, 300);
+                }, 1000);
+            }
+        });
+    });
+
+    rejectButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const paymentRow = this.closest('.payment-row');
+            if (paymentRow) {
+                // Animate the rejection
+                paymentRow.style.transition = 'all 0.3s ease';
+                paymentRow.style.backgroundColor = '#FEF2F2';
+                paymentRow.style.borderColor = '#EF4444';
+
+                // Remove after animation
+                setTimeout(() => {
+                    paymentRow.style.opacity = '0';
+                    paymentRow.style.transform = 'translateX(-20px)';
+                    setTimeout(() => {
+                        paymentRow.remove();
+                        updatePendingCount();
+                    }, 300);
+                }, 500);
+            }
+        });
+    });
+}
+
+/**
+ * Update pending payment count after action
+ */
+function updatePendingCount() {
+    const pendingPayments = document.querySelectorAll('.pending-payment');
+    const pendingValue = document.querySelector('.summary-card .pending-icon')?.closest('.summary-card')?.querySelector('.summary-value');
+
+    if (pendingPayments.length === 0) {
+        // All payments processed
+        const pendingSection = document.querySelector('.payments-section .section-subheader span');
+        if (pendingSection && pendingSection.textContent === 'Pending Approval') {
+            const section = pendingSection.closest('.payments-section');
+            if (section) {
+                section.innerHTML = `
+                    <div style="text-align: center; padding: 24px; color: var(--color-text-light);">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2" style="margin-bottom: 12px;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        <p style="font-weight: 500; color: var(--color-secondary); margin-bottom: 4px;">All caught up!</p>
+                        <p style="font-size: 12px;">No payments pending approval.</p>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Recalculate pending total
+    let total = 0;
+    pendingPayments.forEach(row => {
+        const amountText = row.querySelector('.payment-amount')?.textContent;
+        if (amountText) {
+            const amount = parseFloat(amountText.replace(/[$,]/g, ''));
+            if (!isNaN(amount)) {
+                total += amount;
+            }
+        }
+    });
+
+    if (pendingValue) {
+        pendingValue.textContent = '$' + total.toLocaleString();
+    }
+}
 
 // Mobile Navigation Styles (injected dynamically)
 const mobileNavStyles = document.createElement('style');
