@@ -701,9 +701,9 @@ h1, h2, h3, h4, h5, h6 {
 .feed-avatar {
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
-    color: var(--color-background);
-    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    color: #FFFFFF;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -818,14 +818,15 @@ h1, h2, h3, h4, h5, h6 {
 .problem-icon {
     width: 56px;
     height: 56px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    background: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-xl);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: var(--space-5);
-    color: var(--color-accent);
+    color: var(--color-background);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .problem-card h3 {
@@ -869,16 +870,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .feature-icon {
-    width: 48px;
-    height: 48px;
-    background: var(--color-accent-glow);
-    border: 1px solid var(--color-border-accent);
-    color: var(--color-accent);
-    border-radius: var(--radius-lg);
+    width: 56px;
+    height: 56px;
+    background: #FFFFFF;
+    border: none;
+    color: var(--color-background);
+    border-radius: var(--radius-xl);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: var(--space-5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .feature-card h3 {
@@ -923,9 +925,9 @@ h1, h2, h3, h4, h5, h6 {
 .step-number {
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
+    background: #FFFFFF;
     color: var(--color-background);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-xl);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -933,6 +935,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: var(--text-xl);
     font-weight: 600;
     flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .step-line {
@@ -1005,14 +1008,15 @@ h1, h2, h3, h4, h5, h6 {
 .author-avatar {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
+    background: #FFFFFF;
     color: var(--color-background);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     font-size: var(--text-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .author-name {
