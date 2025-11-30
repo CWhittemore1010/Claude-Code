@@ -214,6 +214,71 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================
+    // Dashboard View Switching
+    // ============================================
+    const dashboardNavItems = document.querySelectorAll('.dashboard-nav .nav-item[data-view]');
+    const dashboardViews = document.querySelectorAll('.dashboard-view');
+
+    if (dashboardNavItems.length > 0) {
+        dashboardNavItems.forEach(navItem => {
+            navItem.addEventListener('click', function() {
+                const targetView = this.getAttribute('data-view');
+
+                // Update nav item active state
+                dashboardNavItems.forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+
+                // Switch views with fade transition
+                dashboardViews.forEach(view => {
+                    if (view.id === `view-${targetView}`) {
+                        view.style.opacity = '0';
+                        view.classList.add('active');
+                        // Trigger reflow
+                        view.offsetHeight;
+                        view.style.transition = 'opacity 0.25s ease';
+                        view.style.opacity = '1';
+                    } else {
+                        view.classList.remove('active');
+                        view.style.opacity = '0';
+                    }
+                });
+            });
+        });
+
+        // Auto-cycle through views for demo effect (optional)
+        let currentViewIndex = 0;
+        const viewNames = ['dashboard', 'contractors', 'payments', 'compliance'];
+
+        const autoCycleViews = () => {
+            currentViewIndex = (currentViewIndex + 1) % viewNames.length;
+            const targetNavItem = document.querySelector(`.dashboard-nav .nav-item[data-view="${viewNames[currentViewIndex]}"]`);
+            if (targetNavItem) {
+                targetNavItem.click();
+            }
+        };
+
+        // Start auto-cycle after 5 seconds, then every 4 seconds
+        let autoCycleTimer;
+        const startAutoCycle = () => {
+            autoCycleTimer = setInterval(autoCycleViews, 4000);
+        };
+
+        // Start auto-cycle after initial delay
+        setTimeout(startAutoCycle, 5000);
+
+        // Pause auto-cycle on hover
+        const dashboardBody = document.querySelector('.dashboard-body');
+        if (dashboardBody) {
+            dashboardBody.addEventListener('mouseenter', () => {
+                clearInterval(autoCycleTimer);
+            });
+            dashboardBody.addEventListener('mouseleave', () => {
+                startAutoCycle();
+            });
+        }
+    }
+
+    // ============================================
     // Pricing Card Hover Enhancement
     // ============================================
     const pricingCards = document.querySelectorAll('.pricing-card');

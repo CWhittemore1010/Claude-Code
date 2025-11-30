@@ -106,24 +106,26 @@
                 </div>
                 <div class="dashboard-body">
                     <aside class="dashboard-nav">
-                        <div class="nav-item active">
+                        <div class="nav-item active" data-view="dashboard">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                             Dashboard
                         </div>
-                        <div class="nav-item">
+                        <div class="nav-item" data-view="contractors">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             Contractors
                         </div>
-                        <div class="nav-item">
+                        <div class="nav-item" data-view="payments">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                             Payments
                         </div>
-                        <div class="nav-item">
+                        <div class="nav-item" data-view="compliance">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             Compliance
                         </div>
                     </aside>
-                    <main class="dashboard-main">
+
+                    <!-- Dashboard View -->
+                    <main class="dashboard-main dashboard-view active" id="view-dashboard">
                         <div class="stat-card">
                             <div class="stat-header">
                                 <span>Active Contractors</span>
@@ -171,6 +173,230 @@
                                     <span class="feed-action">Invoice processed</span>
                                 </div>
                                 <div class="feed-amount">$1,800</div>
+                            </div>
+                        </div>
+                    </main>
+
+                    <!-- Contractors View -->
+                    <main class="dashboard-main dashboard-view" id="view-contractors">
+                        <div class="view-header-row">
+                            <h3 class="view-title">Contractors</h3>
+                            <button class="demo-btn demo-btn-primary">+ Add Contractor</button>
+                        </div>
+                        <div class="contractors-table">
+                            <div class="table-header">
+                                <span class="col-name">Name</span>
+                                <span class="col-status">Status</span>
+                                <span class="col-rate">Rate</span>
+                                <span class="col-ytd">YTD Paid</span>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-name">
+                                    <div class="contractor-avatar">JD</div>
+                                    <div class="contractor-info">
+                                        <span class="contractor-name">Jane Doe</span>
+                                        <span class="contractor-role">UI/UX Designer</span>
+                                    </div>
+                                </div>
+                                <span class="col-status"><span class="status-badge status-active">Active</span></span>
+                                <span class="col-rate">$85/hr</span>
+                                <span class="col-ytd">$24,500</span>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-name">
+                                    <div class="contractor-avatar">MS</div>
+                                    <div class="contractor-info">
+                                        <span class="contractor-name">Mike Smith</span>
+                                        <span class="contractor-role">Full Stack Developer</span>
+                                    </div>
+                                </div>
+                                <span class="col-status"><span class="status-badge status-active">Active</span></span>
+                                <span class="col-rate">$120/hr</span>
+                                <span class="col-ytd">$48,200</span>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-name">
+                                    <div class="contractor-avatar">AL</div>
+                                    <div class="contractor-info">
+                                        <span class="contractor-name">Amy Lee</span>
+                                        <span class="contractor-role">Content Strategist</span>
+                                    </div>
+                                </div>
+                                <span class="col-status"><span class="status-badge status-active">Active</span></span>
+                                <span class="col-rate">$75/hr</span>
+                                <span class="col-ytd">$18,750</span>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-name">
+                                    <div class="contractor-avatar">RK</div>
+                                    <div class="contractor-info">
+                                        <span class="contractor-name">Robert Kim</span>
+                                        <span class="contractor-role">DevOps Engineer</span>
+                                    </div>
+                                </div>
+                                <span class="col-status"><span class="status-badge status-pending">Onboarding</span></span>
+                                <span class="col-rate">$95/hr</span>
+                                <span class="col-ytd">$0</span>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-name">
+                                    <div class="contractor-avatar">SP</div>
+                                    <div class="contractor-info">
+                                        <span class="contractor-name">Sarah Park</span>
+                                        <span class="contractor-role">Marketing Lead</span>
+                                    </div>
+                                </div>
+                                <span class="col-status"><span class="status-badge status-active">Active</span></span>
+                                <span class="col-rate">$90/hr</span>
+                                <span class="col-ytd">$32,400</span>
+                            </div>
+                        </div>
+                    </main>
+
+                    <!-- Payments View -->
+                    <main class="dashboard-main dashboard-view" id="view-payments">
+                        <div class="view-header-row">
+                            <h3 class="view-title">Payments</h3>
+                            <button class="demo-btn demo-btn-primary">+ New Payment</button>
+                        </div>
+                        <div class="payments-stats">
+                            <div class="payment-stat-card">
+                                <span class="payment-stat-label">Due This Week</span>
+                                <span class="payment-stat-value">$8,450</span>
+                            </div>
+                            <div class="payment-stat-card">
+                                <span class="payment-stat-label">Scheduled</span>
+                                <span class="payment-stat-value">$15,200</span>
+                            </div>
+                            <div class="payment-stat-card">
+                                <span class="payment-stat-label">Paid (MTD)</span>
+                                <span class="payment-stat-value">$42,800</span>
+                            </div>
+                        </div>
+                        <div class="payments-list">
+                            <div class="list-section-header">Pending Approval</div>
+                            <div class="payment-item">
+                                <div class="payment-info">
+                                    <div class="contractor-avatar small">JD</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Jane Doe</span>
+                                        <span class="payment-desc">Sprint 12 - UI Components</span>
+                                    </div>
+                                </div>
+                                <div class="payment-meta">
+                                    <span class="payment-amount">$2,500</span>
+                                    <button class="demo-btn demo-btn-small demo-btn-success">Approve</button>
+                                </div>
+                            </div>
+                            <div class="payment-item">
+                                <div class="payment-info">
+                                    <div class="contractor-avatar small">MS</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Mike Smith</span>
+                                        <span class="payment-desc">API Integration - Phase 2</span>
+                                    </div>
+                                </div>
+                                <div class="payment-meta">
+                                    <span class="payment-amount">$4,800</span>
+                                    <button class="demo-btn demo-btn-small demo-btn-success">Approve</button>
+                                </div>
+                            </div>
+                            <div class="list-section-header">Scheduled</div>
+                            <div class="payment-item scheduled">
+                                <div class="payment-info">
+                                    <div class="contractor-avatar small">AL</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Amy Lee</span>
+                                        <span class="payment-desc">Monthly Retainer - Dec</span>
+                                    </div>
+                                </div>
+                                <div class="payment-meta">
+                                    <span class="payment-amount">$3,000</span>
+                                    <span class="payment-date">Dec 15</span>
+                                </div>
+                            </div>
+                            <div class="payment-item scheduled">
+                                <div class="payment-info">
+                                    <div class="contractor-avatar small">SP</div>
+                                    <div class="payment-details">
+                                        <span class="payment-name">Sarah Park</span>
+                                        <span class="payment-desc">Campaign Q4 Bonus</span>
+                                    </div>
+                                </div>
+                                <div class="payment-meta">
+                                    <span class="payment-amount">$5,000</span>
+                                    <span class="payment-date">Dec 20</span>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+
+                    <!-- Compliance View -->
+                    <main class="dashboard-main dashboard-view" id="view-compliance">
+                        <div class="view-header-row">
+                            <h3 class="view-title">Compliance</h3>
+                            <span class="compliance-badge-large">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                100% Compliant
+                            </span>
+                        </div>
+                        <div class="compliance-grid">
+                            <div class="compliance-card">
+                                <div class="compliance-card-header">
+                                    <span class="compliance-card-title">W-9 Forms</span>
+                                    <span class="compliance-count">47/47</span>
+                                </div>
+                                <div class="compliance-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <span class="compliance-status-text success">All contractors submitted</span>
+                            </div>
+                            <div class="compliance-card">
+                                <div class="compliance-card-header">
+                                    <span class="compliance-card-title">TIN Verification</span>
+                                    <span class="compliance-count">47/47</span>
+                                </div>
+                                <div class="compliance-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <span class="compliance-status-text success">All TINs verified with IRS</span>
+                            </div>
+                        </div>
+                        <div class="compliance-section">
+                            <div class="list-section-header">1099-NEC Status (2024)</div>
+                            <div class="compliance-row">
+                                <div class="compliance-row-info">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    <div>
+                                        <span class="compliance-row-title">Forms Ready to File</span>
+                                        <span class="compliance-row-sub">12 contractors over $600 threshold</span>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-ready">Ready</span>
+                            </div>
+                            <div class="compliance-row">
+                                <div class="compliance-row-info">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    <div>
+                                        <span class="compliance-row-title">Filing Deadline</span>
+                                        <span class="compliance-row-sub">January 31, 2025</span>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-info">62 days</span>
+                            </div>
+                            <div class="compliance-row">
+                                <div class="compliance-row-info">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    <div>
+                                        <span class="compliance-row-title">Auto-File Enabled</span>
+                                        <span class="compliance-row-sub">Forms will be submitted automatically</span>
+                                    </div>
+                                </div>
+                                <span class="status-badge status-active">On</span>
                             </div>
                         </div>
                     </main>
