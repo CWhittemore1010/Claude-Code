@@ -3,202 +3,749 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PayoutMate Dashboard Preview</title>
+  <title>PayoutMate Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
-    @keyframes fade-in {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in {
-      animation: fade-in 0.5s ease-out forwards;
-    }
+    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slide-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+    .animate-slide-in { animation: slide-in 0.3s ease-out forwards; }
+    .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-400 min-h-screen flex items-center justify-center p-8">
+<body class="bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 min-h-screen flex items-center justify-center p-4 md:p-8">
   <div id="root"></div>
 
   <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+
+    // Initial contractor data
+    const initialContractors = [
+      { id: 1, initials: 'SM', name: 'Sarah Mitchell', company: 'Mitchell Design Co.', project: 'Website Redesign', amount: 3200, speed: 'Instant', status: 'Paid', color: 'bg-blue-500', email: 'sarah@mitchelldesign.co', w9: true, paidAt: '2024-01-15T10:30:00' },
+      { id: 2, initials: 'JC', name: 'James Chen', company: 'Chen Mobile Dev', project: 'Mobile App Phase 2', amount: 5500, speed: 'Express', status: 'Processing', color: 'bg-indigo-500', email: 'james@chendev.io', w9: true, paidAt: null },
+      { id: 3, initials: 'DS', name: 'DevStudio LLC', company: 'DevStudio LLC', project: 'Backend API Integration', amount: 8750, speed: 'Standard', status: 'Scheduled', color: 'bg-purple-500', email: 'billing@devstudio.com', w9: true, paidAt: null, scheduledFor: '2024-01-20' },
+      { id: 4, initials: 'MG', name: 'Maria Garcia', company: 'Garcia Creative', project: 'UGC Campaign Q1', amount: 1200, speed: 'Instant', status: 'Paid', color: 'bg-pink-500', email: 'maria@garciacreative.com', w9: true, paidAt: '2024-01-14T15:45:00' },
+      { id: 5, initials: 'AT', name: 'Alex Thompson', company: 'Freelance', project: 'Logo & Brand Identity', amount: 950, speed: 'Instant', status: 'Paid', color: 'bg-orange-500', email: 'alex.t.design@gmail.com', w9: true, paidAt: '2024-01-13T09:15:00' },
+      { id: 6, initials: 'RK', name: 'Rachel Kim', company: 'Kim Consulting', project: 'Market Research Report', amount: 2800, speed: 'Standard', status: 'Pending', color: 'bg-teal-500', email: 'rachel@kimconsulting.com', w9: false, paidAt: null },
+    ];
+
+    // PayoutMate Logo Component
+    const PayoutMateLogo = ({ size = 'md' }) => {
+      const sizes = { sm: 'w-8 h-8', md: 'w-10 h-10', lg: 'w-12 h-12' };
+      return (
+        <div className={`${sizes[size]} bg-white rounded-xl flex items-center justify-center shadow-lg`}>
+          <svg viewBox="0 0 24 24" className="w-6 h-6 text-blue-600" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </div>
+      );
+    };
+
+    // Icon Components
+    const Icons = {
+      dashboard: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>,
+      folder: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>,
+      users: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+      creditCard: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>,
+      shield: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
+      settings: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+      plus: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>,
+      check: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>,
+      checkCircle: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+      clock: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+      trendingUp: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
+      x: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>,
+      search: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
+      filter: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>,
+      download: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>,
+      dollar: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+      lightning: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
+      document: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
+      trash: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>,
+      edit: (props) => <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
+    };
+
+    // Toast Notification Component
+    const Toast = ({ message, type = 'success', onClose }) => {
+      useEffect(() => {
+        const timer = setTimeout(onClose, 4000);
+        return () => clearTimeout(timer);
+      }, [onClose]);
+
+      return (
+        <div className="animate-slide-in bg-white rounded-xl shadow-2xl border border-gray-100 px-4 py-3 flex items-center space-x-3 max-w-sm">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center ${type === 'success' ? 'bg-blue-100' : 'bg-red-100'}`}>
+            {type === 'success' ? (
+              <Icons.check className="w-5 h-5 text-blue-600" />
+            ) : (
+              <Icons.x className="w-5 h-5 text-red-600" />
+            )}
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-900">{message}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <Icons.x className="w-4 h-4" />
+          </button>
+        </div>
+      );
+    };
+
+    // Modal Component
+    const Modal = ({ isOpen, onClose, title, children }) => {
+      if (!isOpen) return null;
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden animate-fade-in">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <Icons.x className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">{children}</div>
+          </div>
+        </div>
+      );
+    };
+
+    // Pay Contractor Modal
+    const PayContractorModal = ({ isOpen, onClose, onSubmit, contractors }) => {
+      const [formData, setFormData] = useState({
+        contractorId: '',
+        newContractor: false,
+        name: '',
+        email: '',
+        company: '',
+        project: '',
+        amount: '',
+        speed: 'Instant',
+      });
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(formData);
+        setFormData({ contractorId: '', newContractor: false, name: '', email: '', company: '', project: '', amount: '', speed: 'Instant' });
+      };
+
+      return (
+        <Modal isOpen={isOpen} onClose={onClose} title="Pay Contractor">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select Contractor</label>
+              <select
+                value={formData.contractorId}
+                onChange={(e) => setFormData({ ...formData, contractorId: e.target.value, newContractor: e.target.value === 'new' })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
+                <option value="">Choose existing contractor...</option>
+                {contractors.map(c => (
+                  <option key={c.id} value={c.id}>{c.name} — {c.email}</option>
+                ))}
+                <option value="new">+ Add new contractor</option>
+              </select>
+            </div>
+
+            {formData.newContractor && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      placeholder="John Doe"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      placeholder="john@example.com"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Company (Optional)</label>
+                  <input
+                    type="text"
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="Acme Inc."
+                  />
+                </div>
+              </>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Project / Description</label>
+              <input
+                type="text"
+                value={formData.project}
+                onChange={(e) => setFormData({ ...formData, project: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                placeholder="Website redesign milestone 2"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Amount (USD)</label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                  className="w-full pl-8 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  placeholder="0.00"
+                  min="1"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Payout Speed</label>
+              <div className="grid grid-cols-3 gap-3">
+                {['Instant', 'Express', 'Standard'].map((speed) => (
+                  <button
+                    key={speed}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, speed })}
+                    className={`px-4 py-3 rounded-xl border-2 transition-all ${
+                      formData.speed === speed
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="text-sm font-medium">{speed}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">
+                      {speed === 'Instant' && '< 30 sec • 1.5%'}
+                      {speed === 'Express' && '< 24 hrs • 0.5%'}
+                      {speed === 'Standard' && '3-5 days • Free'}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-4 flex space-x-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg shadow-blue-500/30"
+              >
+                Send Payment
+              </button>
+            </div>
+          </form>
+        </Modal>
+      );
+    };
+
+    // Contractor Detail Modal
+    const ContractorDetailModal = ({ isOpen, onClose, contractor, onRequestW9 }) => {
+      if (!contractor) return null;
+
+      return (
+        <Modal isOpen={isOpen} onClose={onClose} title="Contractor Details">
+          <div className="space-y-6">
+            <div className="flex items-center space-x-4">
+              <div className={`w-16 h-16 rounded-2xl ${contractor.color} flex items-center justify-center text-white text-xl font-bold shadow-lg`}>
+                {contractor.initials}
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">{contractor.name}</h3>
+                <p className="text-gray-500">{contractor.company}</p>
+                <p className="text-sm text-gray-400">{contractor.email}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className="text-sm text-gray-500 mb-1">Total Paid</p>
+                <p className="text-2xl font-bold text-gray-900">${contractor.amount.toLocaleString()}</p>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className="text-sm text-gray-500 mb-1">W-9 Status</p>
+                <div className="flex items-center space-x-2">
+                  {contractor.w9 ? (
+                    <>
+                      <Icons.checkCircle className="w-5 h-5 text-blue-500" />
+                      <span className="font-medium text-blue-600">Collected</span>
+                    </>
+                  ) : (
+                    <>
+                      <Icons.clock className="w-5 h-5 text-amber-500" />
+                      <span className="font-medium text-amber-600">Pending</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-100 pt-4">
+              <h4 className="font-medium text-gray-900 mb-3">Recent Project</h4>
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className="font-medium text-gray-900">{contractor.project}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  {contractor.status === 'Paid' ? `Paid on ${new Date(contractor.paidAt).toLocaleDateString()}` : contractor.status}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex space-x-3">
+              {!contractor.w9 && (
+                <button
+                  onClick={() => onRequestW9(contractor.id)}
+                  className="flex-1 px-4 py-2.5 border border-blue-200 text-blue-700 rounded-xl hover:bg-blue-50 transition-colors font-medium"
+                >
+                  Request W-9
+                </button>
+              )}
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium"
+              >
+                Pay Again
+              </button>
+            </div>
+          </div>
+        </Modal>
+      );
+    };
+
+    // Main Dashboard Component
     const PayoutDashboard = () => {
+      const [activeNav, setActiveNav] = useState('payments');
+      const [contractors, setContractors] = useState(initialContractors);
+      const [searchQuery, setSearchQuery] = useState('');
+      const [statusFilter, setStatusFilter] = useState('all');
+      const [toasts, setToasts] = useState([]);
+      const [isPayModalOpen, setIsPayModalOpen] = useState(false);
+      const [selectedContractor, setSelectedContractor] = useState(null);
+      const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
       const navItems = [
-        { icon: 'grid', label: 'Dashboard', active: false },
-        { icon: 'folder', label: 'Projects', active: false },
-        { icon: 'users', label: 'Contractors', active: false },
-        { icon: 'credit-card', label: 'Payments', active: true },
-        { icon: 'shield', label: 'Compliance', active: false },
-        { icon: 'settings', label: 'Settings', active: false },
+        { id: 'dashboard', icon: Icons.dashboard, label: 'Dashboard' },
+        { id: 'projects', icon: Icons.folder, label: 'Projects' },
+        { id: 'contractors', icon: Icons.users, label: 'Contractors' },
+        { id: 'payments', icon: Icons.creditCard, label: 'Payments' },
+        { id: 'compliance', icon: Icons.shield, label: 'Compliance' },
+        { id: 'settings', icon: Icons.settings, label: 'Settings' },
       ];
 
-      const stats = [
-        { label: 'Paid This Month', value: '$47,250', icon: 'trending-up', trend: '+12%', trendUp: true },
-        { label: 'In Escrow', value: '$12,400', icon: 'shield', trend: null },
-        { label: 'Pending Approval', value: '3 milestones', icon: 'clock', trend: null },
-        { label: '1099 Ready', value: '18 contractors', icon: 'check-circle', trend: null },
-      ];
+      const addToast = useCallback((message, type = 'success') => {
+        const id = Date.now();
+        setToasts(prev => [...prev, { id, message, type }]);
+      }, []);
 
-      const payments = [
-        { initials: 'SM', name: 'Sarah M.', project: 'Website Redesign', amount: '$3,200', speed: 'Instant', status: 'Paid', color: 'bg-emerald-500' },
-        { initials: 'JC', name: 'James C.', project: 'Mobile App Phase 2', amount: '$5,500', speed: 'Express 24hr', status: 'Processing', color: 'bg-blue-500' },
-        { initials: 'DS', name: 'DevStudio LLC', project: 'Backend API', amount: '$8,750', speed: 'Standard', status: 'Scheduled', color: 'bg-purple-500' },
-        { initials: 'MG', name: 'Maria G.', project: 'UGC Campaign', amount: '$1,200', speed: 'Instant', status: 'Paid', color: 'bg-pink-500' },
-        { initials: 'AT', name: 'Alex T.', project: 'Logo Design', amount: '$950', speed: 'Instant', status: 'Paid', color: 'bg-orange-500' },
-      ];
+      const removeToast = useCallback((id) => {
+        setToasts(prev => prev.filter(t => t.id !== id));
+      }, []);
 
+      // Calculate stats
+      const stats = {
+        paidThisMonth: contractors.filter(c => c.status === 'Paid').reduce((sum, c) => sum + c.amount, 0),
+        inEscrow: contractors.filter(c => c.status === 'Processing' || c.status === 'Scheduled').reduce((sum, c) => sum + c.amount, 0),
+        pendingApproval: contractors.filter(c => c.status === 'Pending').length,
+        w9Ready: contractors.filter(c => c.w9).length,
+        totalContractors: contractors.length,
+      };
+
+      // Filter contractors
+      const filteredContractors = contractors.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              c.project.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              c.company.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = statusFilter === 'all' || c.status.toLowerCase() === statusFilter.toLowerCase();
+        return matchesSearch && matchesStatus;
+      });
+
+      // Handle new payment
+      const handlePayment = (formData) => {
+        const amount = parseFloat(formData.amount);
+        let contractor;
+
+        if (formData.newContractor) {
+          const initials = formData.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+          const colors = ['bg-blue-500', 'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-orange-500', 'bg-teal-500'];
+          contractor = {
+            id: Date.now(),
+            initials,
+            name: formData.name,
+            email: formData.email,
+            company: formData.company || 'Freelance',
+            project: formData.project,
+            amount,
+            speed: formData.speed,
+            status: formData.speed === 'Instant' ? 'Processing' : 'Scheduled',
+            color: colors[Math.floor(Math.random() * colors.length)],
+            w9: false,
+            paidAt: null,
+          };
+          setContractors(prev => [contractor, ...prev]);
+        } else {
+          const existingContractor = contractors.find(c => c.id === parseInt(formData.contractorId));
+          contractor = {
+            ...existingContractor,
+            id: Date.now(),
+            project: formData.project,
+            amount,
+            speed: formData.speed,
+            status: formData.speed === 'Instant' ? 'Processing' : 'Scheduled',
+            paidAt: null,
+          };
+          setContractors(prev => [contractor, ...prev.filter(c => c.id !== existingContractor.id)]);
+        }
+
+        setIsPayModalOpen(false);
+        addToast(`Payment of $${amount.toLocaleString()} initiated to ${contractor.name}`);
+
+        // Simulate instant payment completion
+        if (formData.speed === 'Instant') {
+          setTimeout(() => {
+            setContractors(prev => prev.map(c =>
+              c.id === contractor.id ? { ...c, status: 'Paid', paidAt: new Date().toISOString() } : c
+            ));
+            addToast(`$${amount.toLocaleString()} sent to ${contractor.name} — Instant payout complete!`);
+          }, 2000);
+        }
+      };
+
+      // Handle W-9 request
+      const handleRequestW9 = (contractorId) => {
+        const contractor = contractors.find(c => c.id === contractorId);
+        addToast(`W-9 request sent to ${contractor.name}`);
+        setIsDetailModalOpen(false);
+      };
+
+      // Handle contractor click
+      const handleContractorClick = (contractor) => {
+        setSelectedContractor(contractor);
+        setIsDetailModalOpen(true);
+      };
+
+      // Get speed badge styles
       const getSpeedBadge = (speed) => {
         switch (speed) {
-          case 'Instant': return 'bg-emerald-100 text-emerald-700';
-          case 'Express 24hr': return 'bg-blue-100 text-blue-700';
+          case 'Instant': return 'bg-blue-100 text-blue-700';
+          case 'Express': return 'bg-indigo-100 text-indigo-700';
           default: return 'bg-gray-100 text-gray-600';
         }
       };
 
+      // Get status badge styles
       const getStatusBadge = (status) => {
         switch (status) {
-          case 'Paid': return { bg: 'bg-emerald-100 text-emerald-700', icon: '✓' };
-          case 'Processing': return { bg: 'bg-amber-100 text-amber-700 animate-pulse', icon: '●' };
+          case 'Paid': return { bg: 'bg-blue-100 text-blue-700', icon: '✓' };
+          case 'Processing': return { bg: 'bg-amber-100 text-amber-700 animate-pulse-soft', icon: '●' };
+          case 'Scheduled': return { bg: 'bg-gray-100 text-gray-600', icon: '○' };
+          case 'Pending': return { bg: 'bg-orange-100 text-orange-700', icon: '!' };
           default: return { bg: 'bg-gray-100 text-gray-600', icon: '○' };
         }
       };
 
-      const NavIcon = ({ type, active }) => {
-        const iconClass = `w-5 h-5 ${active ? 'text-emerald-600' : 'text-gray-400'}`;
-        const icons = {
-          grid: <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>,
-          folder: <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>,
-          users: <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
-          'credit-card': <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>,
-          shield: <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
-          settings: <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
-        };
-        return icons[type] || null;
-      };
-
-      const StatIcon = ({ type }) => {
-        const iconClass = 'w-5 h-5';
-        const icons = {
-          'trending-up': <svg className={`${iconClass} text-emerald-500`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
-          shield: <svg className={`${iconClass} text-blue-500`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
-          clock: <svg className={`${iconClass} text-amber-500`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-          'check-circle': <svg className={`${iconClass} text-emerald-500`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-        };
-        return icons[type] || null;
-      };
-
       return (
-        <div className="relative w-full max-w-5xl mx-auto rounded-2xl overflow-hidden bg-gray-50 shadow-2xl shadow-gray-900/20">
-          <div className="flex h-[520px]">
+        <div className="relative w-full max-w-6xl mx-auto rounded-2xl overflow-hidden bg-gray-50 shadow-2xl shadow-black/25">
+          <div className="flex h-[600px]">
             {/* Left Sidebar */}
             <div className="w-16 bg-white border-r border-gray-100 flex flex-col items-center py-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center mb-8 shadow-lg shadow-emerald-500/30">
-                <span className="text-white font-bold text-lg">P</span>
-              </div>
-              <nav className="flex flex-col items-center space-y-2 flex-1">
-                {navItems.map((item, index) => (
-                  <button key={index} className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${item.active ? 'bg-emerald-50 shadow-sm' : 'hover:bg-gray-50'}`} title={item.label}>
-                    <NavIcon type={item.icon} active={item.active} />
+              <PayoutMateLogo />
+
+              <nav className="flex flex-col items-center space-y-1 flex-1 mt-8">
+                {navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveNav(item.id)}
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 group relative ${
+                      activeNav === item.id
+                        ? 'bg-blue-50 shadow-sm'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    title={item.label}
+                  >
+                    <item.icon className={`w-5 h-5 ${activeNav === item.id ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
+                    {activeNav === item.id && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 rounded-r-full" />
+                    )}
                   </button>
                 ))}
               </nav>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-medium">JD</div>
+
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-semibold shadow-lg cursor-pointer hover:shadow-xl transition-shadow">
+                JD
+              </div>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 bg-gray-50 overflow-hidden">
+            <div className="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+              {/* Header */}
               <div className="bg-white border-b border-gray-100 px-6 py-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h1 className="text-xl font-semibold text-gray-900">Payments</h1>
-                    <p className="text-sm text-gray-500 mt-0.5">Manage contractor payouts</p>
+                    <div className="flex items-center space-x-3">
+                      <h1 className="text-xl font-bold text-gray-900">Payments</h1>
+                      <span className="px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                        {contractors.length} contractors
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-0.5">Manage and track contractor payouts</p>
                   </div>
-                  <button className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-sm font-medium rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 shadow-lg shadow-emerald-500/30 flex items-center space-x-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                    <span>Pay Contractor</span>
-                  </button>
+                  <div className="flex items-center space-x-3">
+                    <button className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors" title="Export">
+                      <Icons.download className="w-5 h-5 text-gray-500" />
+                    </button>
+                    <button
+                      onClick={() => setIsPayModalOpen(true)}
+                      className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg shadow-blue-500/30 flex items-center space-x-2"
+                    >
+                      <Icons.plus className="w-4 h-4" />
+                      <span>Pay Contractor</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
+              {/* Stats Grid */}
               <div className="px-6 py-4">
                 <div className="grid grid-cols-4 gap-4">
-                  {stats.map((stat, index) => (
-                    <div key={index} className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">{stat.label}</span>
-                        <StatIcon type={stat.icon} />
-                      </div>
-                      <div className="flex items-end justify-between">
-                        <span className="text-xl font-bold text-gray-900">{stat.value}</span>
-                        {stat.trend && <span className={`text-xs font-medium ${stat.trendUp ? 'text-emerald-600' : 'text-red-600'}`}>{stat.trend}</span>}
-                      </div>
+                  <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Paid This Month</span>
+                      <Icons.trendingUp className="w-5 h-5 text-blue-500" />
                     </div>
-                  ))}
+                    <div className="flex items-end justify-between">
+                      <span className="text-2xl font-bold text-gray-900">${stats.paidThisMonth.toLocaleString()}</span>
+                      <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">+12%</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">In Escrow</span>
+                      <Icons.shield className="w-5 h-5 text-indigo-500" />
+                    </div>
+                    <div className="flex items-end justify-between">
+                      <span className="text-2xl font-bold text-gray-900">${stats.inEscrow.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending Approval</span>
+                      <Icons.clock className="w-5 h-5 text-amber-500" />
+                    </div>
+                    <div className="flex items-end justify-between">
+                      <span className="text-2xl font-bold text-gray-900">{stats.pendingApproval}</span>
+                      <span className="text-xs text-gray-500">milestones</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">1099 Ready</span>
+                      <Icons.checkCircle className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div className="flex items-end justify-between">
+                      <span className="text-2xl font-bold text-gray-900">{stats.w9Ready}/{stats.totalContractors}</span>
+                      <span className="text-xs text-gray-500">W-9s</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="px-6 pb-4">
-                <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                  <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wide">
+              {/* Search and Filter Bar */}
+              <div className="px-6 pb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="relative flex-1">
+                    <Icons.search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search contractors, projects..."
+                      className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none cursor-pointer"
+                  >
+                    <option value="all">All Status</option>
+                    <option value="paid">Paid</option>
+                    <option value="processing">Processing</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Payment List */}
+              <div className="px-6 pb-4 flex-1 overflow-hidden">
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full flex flex-col">
+                  {/* Table Header */}
+                  <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     <div className="col-span-4">Contractor</div>
                     <div className="col-span-2 text-right">Amount</div>
                     <div className="col-span-2 text-center">Speed</div>
                     <div className="col-span-2 text-center">Status</div>
                     <div className="col-span-2 text-center">Protected</div>
                   </div>
-                  {payments.map((payment, index) => {
-                    const statusStyle = getStatusBadge(payment.status);
-                    return (
-                      <div key={index} className={`grid grid-cols-12 gap-4 px-4 py-3.5 items-center hover:bg-gray-50 transition-colors duration-150 ${index !== payments.length - 1 ? 'border-b border-gray-50' : ''}`}>
-                        <div className="col-span-4 flex items-center space-x-3">
-                          <div className={`w-9 h-9 rounded-full ${payment.color} flex items-center justify-center text-white text-xs font-semibold shadow-sm`}>{payment.initials}</div>
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">{payment.name}</div>
-                            <div className="text-xs text-gray-500">{payment.project}</div>
-                          </div>
-                        </div>
-                        <div className="col-span-2 text-right"><span className="text-sm font-semibold text-gray-900">{payment.amount}</span></div>
-                        <div className="col-span-2 text-center"><span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${getSpeedBadge(payment.speed)}`}>{payment.speed}</span></div>
-                        <div className="col-span-2 text-center"><span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${statusStyle.bg}`}><span className="mr-1">{statusStyle.icon}</span>{payment.status}</span></div>
-                        <div className="col-span-2 text-center">
-                          {payment.status === 'Paid' && (
-                            <div className="inline-flex items-center text-emerald-600">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                            </div>
-                          )}
-                        </div>
+
+                  {/* Payment Rows */}
+                  <div className="flex-1 overflow-y-auto scrollbar-thin">
+                    {filteredContractors.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                        <Icons.search className="w-12 h-12 text-gray-300 mb-3" />
+                        <p className="font-medium">No contractors found</p>
+                        <p className="text-sm text-gray-400">Try adjusting your search or filter</p>
                       </div>
-                    );
-                  })}
+                    ) : (
+                      filteredContractors.map((contractor, index) => {
+                        const statusStyle = getStatusBadge(contractor.status);
+                        return (
+                          <div
+                            key={contractor.id}
+                            onClick={() => handleContractorClick(contractor)}
+                            className={`grid grid-cols-12 gap-4 px-4 py-3.5 items-center hover:bg-blue-50/50 transition-colors duration-150 cursor-pointer ${
+                              index !== filteredContractors.length - 1 ? 'border-b border-gray-50' : ''
+                            }`}
+                          >
+                            <div className="col-span-4 flex items-center space-x-3">
+                              <div className={`w-10 h-10 rounded-xl ${contractor.color} flex items-center justify-center text-white text-xs font-bold shadow-sm`}>
+                                {contractor.initials}
+                              </div>
+                              <div>
+                                <div className="text-sm font-semibold text-gray-900">{contractor.name}</div>
+                                <div className="text-xs text-gray-500">{contractor.project}</div>
+                              </div>
+                            </div>
+
+                            <div className="col-span-2 text-right">
+                              <span className="text-sm font-bold text-gray-900">${contractor.amount.toLocaleString()}</span>
+                            </div>
+
+                            <div className="col-span-2 text-center">
+                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getSpeedBadge(contractor.speed)}`}>
+                                {contractor.speed === 'Instant' && <Icons.lightning className="w-3 h-3 mr-1" />}
+                                {contractor.speed}
+                              </span>
+                            </div>
+
+                            <div className="col-span-2 text-center">
+                              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${statusStyle.bg}`}>
+                                <span className="mr-1">{statusStyle.icon}</span>
+                                {contractor.status}
+                              </span>
+                            </div>
+
+                            <div className="col-span-2 text-center">
+                              {contractor.status === 'Paid' && contractor.w9 && (
+                                <div className="inline-flex items-center text-blue-600">
+                                  <Icons.shield className="w-5 h-5" />
+                                </div>
+                              )}
+                              {!contractor.w9 && (
+                                <span className="text-xs text-amber-600 font-medium">W-9 needed</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Toast Notification */}
-          <div className="absolute bottom-6 right-6 animate-fade-in">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 flex items-center space-x-3">
-              <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+          {/* Compliance Badge */}
+          <div className="absolute top-4 right-4">
+            <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-100 px-3 py-2 flex items-center space-x-2">
+              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center">
+                <Icons.check className="w-3 h-3 text-blue-600" />
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">$3,200 sent to Sarah M.</p>
-                <p className="text-xs text-gray-500">Instant payout completed</p>
-              </div>
+              <span className="text-xs font-semibold text-gray-700">{stats.w9Ready}/{stats.totalContractors} W-9s collected</span>
             </div>
           </div>
 
-          {/* Compliance Badge */}
-          <div className="absolute top-6 right-6">
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-sm border border-gray-100 px-3 py-2 flex items-center space-x-2">
-              <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              <span className="text-xs font-medium text-gray-700">18/18 W-9s collected</span>
-            </div>
+          {/* Toast Container */}
+          <div className="absolute bottom-4 right-4 space-y-2">
+            {toasts.map((toast) => (
+              <Toast
+                key={toast.id}
+                message={toast.message}
+                type={toast.type}
+                onClose={() => removeToast(toast.id)}
+              />
+            ))}
           </div>
+
+          {/* Modals */}
+          <PayContractorModal
+            isOpen={isPayModalOpen}
+            onClose={() => setIsPayModalOpen(false)}
+            onSubmit={handlePayment}
+            contractors={contractors}
+          />
+
+          <ContractorDetailModal
+            isOpen={isDetailModalOpen}
+            onClose={() => setIsDetailModalOpen(false)}
+            contractor={selectedContractor}
+            onRequestW9={handleRequestW9}
+          />
         </div>
       );
     };
