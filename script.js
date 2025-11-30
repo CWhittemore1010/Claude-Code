@@ -244,38 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         });
-
-        // Auto-cycle through views for demo effect (optional)
-        let currentViewIndex = 0;
-        const viewNames = ['dashboard', 'contractors', 'payments', 'compliance'];
-
-        const autoCycleViews = () => {
-            currentViewIndex = (currentViewIndex + 1) % viewNames.length;
-            const targetNavItem = document.querySelector(`.dashboard-nav .nav-item[data-view="${viewNames[currentViewIndex]}"]`);
-            if (targetNavItem) {
-                targetNavItem.click();
-            }
-        };
-
-        // Start auto-cycle after 5 seconds, then every 4 seconds
-        let autoCycleTimer;
-        const startAutoCycle = () => {
-            autoCycleTimer = setInterval(autoCycleViews, 4000);
-        };
-
-        // Start auto-cycle after initial delay
-        setTimeout(startAutoCycle, 5000);
-
-        // Pause auto-cycle on hover
-        const dashboardBody = document.querySelector('.dashboard-body');
-        if (dashboardBody) {
-            dashboardBody.addEventListener('mouseenter', () => {
-                clearInterval(autoCycleTimer);
-            });
-            dashboardBody.addEventListener('mouseleave', () => {
-                startAutoCycle();
-            });
-        }
     }
 
     // ============================================
