@@ -9,8 +9,17 @@
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            display: ['Instrument Serif', 'Georgia', 'serif'],
+            body: ['DM Sans', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
           colors: {
-            brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' }
+            ink: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a', 950: '#020617' },
+            electric: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+            mint: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
+            coral: { 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48' },
+            gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
           }
         }
       }
@@ -19,396 +28,284 @@
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'Inter', system-ui, sans-serif; }
-    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes slide-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-    @keyframes progress { from { width: 0; } to { width: 100%; } }
-    .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
-    .animate-slide-in { animation: slide-in 0.25s ease-out forwards; }
-    .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
-    .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
-    .scrollbar-thin::-webkit-scrollbar { width: 5px; height: 5px; }
-    .scrollbar-thin::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-    .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    input[type="file"] { display: none; }
+    :root {
+      --gradient-mesh: radial-gradient(at 40% 20%, hsla(199,89%,48%,0.15) 0px, transparent 50%),
+                       radial-gradient(at 80% 0%, hsla(158,64%,52%,0.1) 0px, transparent 50%),
+                       radial-gradient(at 0% 50%, hsla(355,78%,60%,0.08) 0px, transparent 50%),
+                       radial-gradient(at 80% 50%, hsla(42,96%,56%,0.08) 0px, transparent 50%),
+                       radial-gradient(at 0% 100%, hsla(199,89%,48%,0.1) 0px, transparent 50%);
+      --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+    * { font-family: 'DM Sans', system-ui, sans-serif; }
+    .font-display { font-family: 'Instrument Serif', Georgia, serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+    @keyframes gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.3); } 50% { box-shadow: 0 0 40px rgba(14, 165, 233, 0.5); } }
+
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .animate-gradient { animation: gradient-shift 8s ease infinite; background-size: 200% 200%; }
+    .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+    .animate-shimmer { animation: shimmer 2s linear infinite; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); background-size: 200% 100%; }
+    .animate-glow { animation: glow 2s ease-in-out infinite; }
+
+    .noise-overlay::before { content: ''; position: absolute; inset: 0; background-image: var(--noise); opacity: 0.03; pointer-events: none; mix-blend-mode: overlay; }
+    .mesh-bg { background-image: var(--gradient-mesh); }
+
+    .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    .glass-dark { background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+
+    .scrollbar-hidden::-webkit-scrollbar { display: none; }
+    .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .text-gradient { background: linear-gradient(135deg, #0ea5e9, #10b981, #0ea5e9); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: gradient-shift 4s ease infinite; }
+
+    .border-gradient { border: 2px solid transparent; background: linear-gradient(white, white) padding-box, linear-gradient(135deg, #0ea5e9, #10b981) border-box; }
+
+    .hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15); }
+
+    .stagger-1 { animation-delay: 0.05s; }
+    .stagger-2 { animation-delay: 0.1s; }
+    .stagger-3 { animation-delay: 0.15s; }
+    .stagger-4 { animation-delay: 0.2s; }
+    .stagger-5 { animation-delay: 0.25s; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 min-h-screen flex items-center justify-center p-3 md:p-6">
-  <div id="root"></div>
+<body class="min-h-screen bg-ink-950 flex items-center justify-center p-4 md:p-8">
+  <!-- Ambient background -->
+  <div class="fixed inset-0 mesh-bg opacity-50"></div>
+  <div class="fixed inset-0 noise-overlay"></div>
+
+  <div id="root" class="relative z-10"></div>
 
   <script type="text/babel">
-    const { useState, useEffect, useCallback, useRef, useMemo } = React;
+    const { useState, useEffect, useCallback, useMemo } = React;
 
-    // ============ DATA ============
+    // Data
     const initialProjects = [
-      { id: 1, name: 'Website Redesign', client: 'Acme Corp', vertical: 'software', budget: 15000, funded: 15000, spent: 8200, status: 'active', contractors: [1, 2], milestones: [
-        { id: 'm1', name: 'Discovery & Wireframes', amount: 3000, status: 'completed', contractor: 1 },
-        { id: 'm2', name: 'UI Design', amount: 4000, status: 'completed', contractor: 1 },
-        { id: 'm3', name: 'Frontend Development', amount: 5000, status: 'in_progress', contractor: 2 },
-        { id: 'm4', name: 'Backend Integration', amount: 2000, status: 'pending', contractor: 2 },
-        { id: 'm5', name: 'QA & Launch', amount: 1000, status: 'pending', contractor: 2 },
+      { id: 1, name: 'Website Redesign', client: 'Acme Corp', vertical: 'software', budget: 15000, funded: 15000, spent: 8200, status: 'active', milestones: [
+        { id: 'm1', name: 'Discovery', amount: 3000, status: 'completed', contractor: 1 },
+        { id: 'm2', name: 'Design', amount: 4000, status: 'completed', contractor: 1 },
+        { id: 'm3', name: 'Development', amount: 5000, status: 'in_progress', contractor: 2 },
+        { id: 'm4', name: 'Launch', amount: 3000, status: 'pending', contractor: 2 },
       ]},
-      { id: 2, name: 'Q1 Influencer Campaign', client: 'StyleBrand Co', vertical: 'ecommerce', budget: 25000, funded: 25000, spent: 12400, status: 'active', contractors: [3, 4, 5], milestones: [
-        { id: 'm6', name: 'Content Brief & Contracts', amount: 2000, status: 'completed', contractor: 3 },
-        { id: 'm7', name: 'Content Creation', amount: 15000, status: 'in_progress', contractor: 4 },
-        { id: 'm8', name: 'Review & Approval', amount: 3000, status: 'pending', contractor: 3 },
-        { id: 'm9', name: 'Publishing & Analytics', amount: 5000, status: 'pending', contractor: 5 },
+      { id: 2, name: 'Q1 Campaign', client: 'StyleBrand', vertical: 'ecommerce', budget: 25000, funded: 25000, spent: 12400, status: 'active', milestones: [
+        { id: 'm5', name: 'Brief', amount: 2000, status: 'completed', contractor: 3 },
+        { id: 'm6', name: 'Content', amount: 15000, status: 'in_progress', contractor: 4 },
+        { id: 'm7', name: 'Launch', amount: 8000, status: 'pending', contractor: 3 },
       ]},
-      { id: 3, name: 'Kitchen Renovation', client: '123 Oak Street', vertical: 'construction', budget: 45000, funded: 30000, spent: 22000, status: 'active', contractors: [6, 7], milestones: [
-        { id: 'm10', name: 'Demo & Prep', amount: 8000, status: 'completed', contractor: 6 },
-        { id: 'm11', name: 'Plumbing Rough-in', amount: 6000, status: 'completed', contractor: 7 },
-        { id: 'm12', name: 'Electrical', amount: 5000, status: 'completed', contractor: 6 },
-        { id: 'm13', name: 'Cabinets & Counters', amount: 15000, status: 'in_progress', contractor: 6 },
-        { id: 'm14', name: 'Final Inspection', amount: 3000, status: 'pending', contractor: 6 },
-        { id: 'm15', name: 'Punch List', amount: 8000, status: 'pending', contractor: 6 },
+      { id: 3, name: 'Kitchen Reno', client: '123 Oak St', vertical: 'construction', budget: 45000, funded: 30000, spent: 22000, status: 'active', milestones: [
+        { id: 'm8', name: 'Demo', amount: 8000, status: 'completed', contractor: 5 },
+        { id: 'm9', name: 'Plumbing', amount: 6000, status: 'completed', contractor: 6 },
+        { id: 'm10', name: 'Cabinets', amount: 15000, status: 'in_progress', contractor: 5 },
+        { id: 'm11', name: 'Finish', amount: 16000, status: 'pending', contractor: 5 },
       ]},
     ];
 
     const initialContractors = [
-      { id: 1, name: 'Sarah Mitchell', email: 'sarah@mitchelldesign.co', company: 'Mitchell Design', type: 'Individual', status: 'active', w9: 'collected', tinMatch: 'verified', totalPaid: 7000, avatar: 'bg-blue-500', initials: 'SM' },
-      { id: 2, name: 'DevStudio LLC', email: 'billing@devstudio.io', company: 'DevStudio LLC', type: 'Business', status: 'active', w9: 'collected', tinMatch: 'verified', totalPaid: 1200, avatar: 'bg-purple-500', initials: 'DS' },
-      { id: 3, name: 'Maria Garcia', email: 'maria@creativeagency.com', company: 'Garcia Creative', type: 'Individual', status: 'active', w9: 'collected', tinMatch: 'verified', totalPaid: 4400, avatar: 'bg-pink-500', initials: 'MG' },
-      { id: 4, name: 'James Chen', email: 'james@contentcreators.co', company: 'Chen Media', type: 'Individual', status: 'active', w9: 'collected', tinMatch: 'pending', totalPaid: 8000, avatar: 'bg-indigo-500', initials: 'JC' },
-      { id: 5, name: 'Alex Thompson', email: 'alex.t@analytics.io', company: 'Thompson Analytics', type: 'Individual', status: 'active', w9: 'pending', tinMatch: 'pending', totalPaid: 0, avatar: 'bg-orange-500', initials: 'AT' },
-      { id: 6, name: 'BuildRight Inc', email: 'ap@buildright.com', company: 'BuildRight Inc', type: 'Business', status: 'active', w9: 'collected', tinMatch: 'verified', totalPaid: 19000, avatar: 'bg-emerald-500', initials: 'BR' },
-      { id: 7, name: 'Mike Plumbing', email: 'mike@mikeplumbing.com', company: 'Mike\'s Plumbing', type: 'Individual', status: 'active', w9: 'collected', tinMatch: 'verified', totalPaid: 6000, avatar: 'bg-cyan-500', initials: 'MP' },
-      { id: 8, name: 'Rachel Kim', email: 'rachel@kimconsulting.co', company: 'Kim Consulting', type: 'Individual', status: 'pending', w9: 'requested', tinMatch: 'pending', totalPaid: 0, avatar: 'bg-rose-500', initials: 'RK' },
+      { id: 1, name: 'Sarah Mitchell', email: 'sarah@design.co', company: 'Mitchell Design', w9: 'collected', tin: 'verified', paid: 7000, color: 'from-electric-400 to-electric-600' },
+      { id: 2, name: 'DevStudio LLC', email: 'dev@studio.io', company: 'DevStudio', w9: 'collected', tin: 'verified', paid: 1200, color: 'from-mint-400 to-mint-600' },
+      { id: 3, name: 'Maria Garcia', email: 'maria@creative.co', company: 'Garcia Creative', w9: 'collected', tin: 'verified', paid: 4400, color: 'from-coral-400 to-coral-600' },
+      { id: 4, name: 'James Chen', email: 'james@content.co', company: 'Chen Media', w9: 'collected', tin: 'pending', paid: 8000, color: 'from-gold-400 to-gold-600' },
+      { id: 5, name: 'BuildRight Inc', email: 'ap@buildright.com', company: 'BuildRight', w9: 'collected', tin: 'verified', paid: 19000, color: 'from-electric-400 to-mint-500' },
+      { id: 6, name: 'Mike Plumbing', email: 'mike@plumb.com', company: "Mike's Plumbing", w9: 'collected', tin: 'verified', paid: 6000, color: 'from-mint-400 to-electric-500' },
     ];
 
     const initialPayments = [
-      { id: 1, contractorId: 1, projectId: 1, milestone: 'UI Design', amount: 4000, speed: 'instant', fee: 80, status: 'completed', date: '2024-01-15', method: 'ACH' },
-      { id: 2, contractorId: 1, projectId: 1, milestone: 'Discovery & Wireframes', amount: 3000, speed: 'express', fee: 24.99, status: 'completed', date: '2024-01-10', method: 'ACH' },
-      { id: 3, contractorId: 6, projectId: 3, milestone: 'Demo & Prep', amount: 8000, speed: 'standard', fee: 0, status: 'completed', date: '2024-01-08', method: 'ACH' },
-      { id: 4, contractorId: 7, projectId: 3, milestone: 'Plumbing Rough-in', amount: 6000, speed: 'instant', fee: 120, status: 'completed', date: '2024-01-12', method: 'ACH' },
-      { id: 5, contractorId: 6, projectId: 3, milestone: 'Electrical', amount: 5000, speed: 'standard', fee: 0, status: 'completed', date: '2024-01-14', method: 'ACH' },
-      { id: 6, contractorId: 3, projectId: 2, milestone: 'Content Brief & Contracts', amount: 2000, speed: 'instant', fee: 40, status: 'completed', date: '2024-01-05', method: 'ACH' },
-      { id: 7, contractorId: 4, projectId: 2, milestone: 'Content Creation (Partial)', amount: 8000, speed: 'express', fee: 24.99, status: 'completed', date: '2024-01-16', method: 'ACH' },
-      { id: 8, contractorId: 3, projectId: 2, milestone: 'Review & Approval', amount: 2400, speed: 'instant', fee: 48, status: 'processing', date: '2024-01-18', method: 'ACH' },
-      { id: 9, contractorId: 2, projectId: 1, milestone: 'Frontend Development', amount: 2500, speed: 'standard', fee: 0, status: 'scheduled', date: '2024-01-25', method: 'ACH' },
+      { id: 1, contractor: 1, amount: 4000, desc: 'UI Design', speed: 'instant', status: 'completed', date: 'Jan 15' },
+      { id: 2, contractor: 5, amount: 8000, desc: 'Demo & Prep', speed: 'standard', status: 'completed', date: 'Jan 12' },
+      { id: 3, contractor: 6, amount: 6000, desc: 'Plumbing', speed: 'instant', status: 'completed', date: 'Jan 10' },
+      { id: 4, contractor: 3, amount: 2400, desc: 'Content Brief', speed: 'express', status: 'processing', date: 'Jan 18' },
+      { id: 5, contractor: 2, amount: 2500, desc: 'Frontend Dev', speed: 'standard', status: 'scheduled', date: 'Jan 25' },
     ];
 
-    const initialInvoices = [
-      { id: 1, contractor: 'External Vendor A', amount: 1250, date: '2024-01-17', status: 'pending_review', ocrData: { vendor: 'Office Supplies Co', amount: 1250, date: '2024-01-15', terms: 'Net 30' }},
-      { id: 2, contractor: 'External Vendor B', amount: 3400, date: '2024-01-16', status: 'approved', ocrData: { vendor: 'Marketing Agency', amount: 3400, date: '2024-01-10', terms: 'Due on Receipt' }},
-    ];
-
-    const verticalTemplates = {
-      software: { name: 'Software Development', stages: ['Discovery', 'Design', 'Development', 'QA', 'Launch'], icon: '💻' },
-      ecommerce: { name: 'E-Commerce Campaign', stages: ['Brief', 'Content Creation', 'Review', 'Publish'], icon: '🛒' },
-      construction: { name: 'Construction/GC', stages: ['Permits', 'Demo', 'Rough-in', 'Finish', 'Inspection'], icon: '🏗️' },
-      creative: { name: 'Video Production', stages: ['Pre-Production', 'Shoot', 'Edit', 'Review', 'Deliver'], icon: '🎬' },
+    const verticals = {
+      software: { icon: '◈', name: 'Software', gradient: 'from-electric-400 to-electric-600' },
+      ecommerce: { icon: '◉', name: 'E-Commerce', gradient: 'from-coral-400 to-coral-600' },
+      construction: { icon: '▣', name: 'Construction', gradient: 'from-gold-400 to-gold-600' },
+      creative: { icon: '◐', name: 'Creative', gradient: 'from-mint-400 to-mint-600' },
     };
 
-    // ============ ICONS ============
-    const Icons = {
-      dashboard: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>,
-      projects: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>,
-      contractors: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
-      payments: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>,
-      invoices: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
-      compliance: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
-      settings: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
-      plus: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>,
-      check: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>,
-      x: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>,
-      clock: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-      lightning: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
-      upload: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>,
-      download: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>,
-      search: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
-      chevronRight: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>,
-      chevronDown: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>,
-      trendingUp: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
-      dollarSign: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-      file: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>,
-      mail: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>,
-      eye: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>,
-      refresh: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>,
-      filter: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>,
-      calendar: (p) => <svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
-      star: (p) => <svg {...p} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>,
-    };
-
-    // ============ COMPONENTS ============
-    const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
-      if (!isOpen) return null;
-      const sizes = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' };
+    // Components
+    const Modal = ({ open, onClose, title, children }) => {
+      if (!open) return null;
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-          <div className={`relative bg-white rounded-2xl shadow-2xl w-full ${sizes[size]} max-h-[90vh] overflow-hidden animate-slide-up`}>
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors"><Icons.x className="w-5 h-5 text-gray-500" /></button>
+          <div className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative glass rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-slide-up border border-ink-200/50">
+            <div className="px-8 py-6 border-b border-ink-200/50">
+              <h2 className="font-display text-2xl text-ink-900">{title}</h2>
             </div>
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)] scrollbar-thin">{children}</div>
+            <div className="p-8">{children}</div>
           </div>
         </div>
       );
     };
 
-    const Toast = ({ message, type = 'success', onClose }) => {
+    const Toast = ({ msg, onClose }) => {
       useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, [onClose]);
       return (
-        <div className="animate-slide-in bg-white rounded-xl shadow-2xl border border-gray-100 px-4 py-3 flex items-center space-x-3 max-w-sm">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${type === 'success' ? 'bg-blue-100' : type === 'warning' ? 'bg-amber-100' : 'bg-red-100'}`}>
-            {type === 'success' ? <Icons.check className="w-4 h-4 text-blue-600" /> : type === 'warning' ? <Icons.clock className="w-4 h-4 text-amber-600" /> : <Icons.x className="w-4 h-4 text-red-600" />}
-          </div>
-          <p className="text-sm font-medium text-gray-900 flex-1">{message}</p>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><Icons.x className="w-4 h-4" /></button>
+        <div className="glass-dark text-white rounded-2xl px-6 py-4 flex items-center gap-4 animate-slide-up border border-ink-700/50">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-mint-400 to-mint-600 flex items-center justify-center text-white font-bold">✓</div>
+          <span className="font-medium">{msg}</span>
         </div>
       );
     };
 
-    const Badge = ({ children, variant = 'default' }) => {
-      const variants = {
-        default: 'bg-gray-100 text-gray-700',
-        success: 'bg-emerald-100 text-emerald-700',
-        warning: 'bg-amber-100 text-amber-700',
-        error: 'bg-red-100 text-red-700',
-        info: 'bg-blue-100 text-blue-700',
-        purple: 'bg-purple-100 text-purple-700',
-      };
-      return <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${variants[variant]}`}>{children}</span>;
-    };
-
-    const StatCard = ({ label, value, subValue, icon: Icon, trend, color = 'blue' }) => {
-      const colors = { blue: 'text-blue-500', emerald: 'text-emerald-500', amber: 'text-amber-500', purple: 'text-purple-500', rose: 'text-rose-500' };
-      return (
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</span>
-            <Icon className={`w-5 h-5 ${colors[color]}`} />
-          </div>
-          <div className="flex items-end justify-between">
-            <span className="text-2xl font-bold text-gray-900">{value}</span>
-            {trend && <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{trend}</span>}
-            {subValue && <span className="text-xs text-gray-500">{subValue}</span>}
-          </div>
-        </div>
-      );
-    };
-
-    const ProgressBar = ({ value, max, size = 'md' }) => {
-      const pct = Math.min((value / max) * 100, 100);
-      const heights = { sm: 'h-1.5', md: 'h-2', lg: 'h-3' };
-      return (
-        <div className={`w-full bg-gray-100 rounded-full ${heights[size]} overflow-hidden`}>
-          <div className={`${heights[size]} bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500`} style={{ width: `${pct}%` }} />
-        </div>
-      );
-    };
-
-    // ============ MAIN APP ============
+    // Main App
     const PayoutDashboard = () => {
-      const [activeView, setActiveView] = useState('dashboard');
+      const [view, setView] = useState('dashboard');
       const [projects, setProjects] = useState(initialProjects);
-      const [contractors, setContractors] = useState(initialContractors);
+      const [contractors] = useState(initialContractors);
       const [payments, setPayments] = useState(initialPayments);
-      const [invoices, setInvoices] = useState(initialInvoices);
       const [toasts, setToasts] = useState([]);
-      const [searchQuery, setSearchQuery] = useState('');
-      const [selectedProject, setSelectedProject] = useState(null);
-      const [selectedContractor, setSelectedContractor] = useState(null);
+      const [payModal, setPayModal] = useState(false);
+      const [approveModal, setApproveModal] = useState(null);
+      const [payForm, setPayForm] = useState({ contractor: '', amount: '', desc: '', speed: 'standard' });
 
-      // Modals
-      const [showPayModal, setShowPayModal] = useState(false);
-      const [showProjectModal, setShowProjectModal] = useState(false);
-      const [showContractorModal, setShowContractorModal] = useState(false);
-      const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-      const [showMilestoneApproval, setShowMilestoneApproval] = useState(null);
-
-      // Form states
-      const [payForm, setPayForm] = useState({ contractorId: '', amount: '', project: '', milestone: '', speed: 'standard' });
-      const [projectForm, setProjectForm] = useState({ name: '', client: '', vertical: 'software', budget: '' });
-      const [contractorForm, setContractorForm] = useState({ name: '', email: '', company: '', type: 'Individual' });
-
-      const addToast = useCallback((message, type = 'success') => {
+      const addToast = useCallback((msg) => {
         const id = Date.now();
-        setToasts(prev => [...prev, { id, message, type }]);
+        setToasts(prev => [...prev, { id, msg }]);
       }, []);
 
-      const removeToast = useCallback((id) => setToasts(prev => prev.filter(t => t.id !== id)), []);
+      const stats = useMemo(() => ({
+        paid: payments.filter(p => p.status === 'completed').reduce((s, p) => s + p.amount, 0),
+        escrow: projects.reduce((s, p) => s + (p.funded - p.spent), 0),
+        pending: projects.flatMap(p => p.milestones).filter(m => m.status === 'in_progress').length,
+        w9: contractors.filter(c => c.w9 === 'collected').length,
+      }), [payments, projects, contractors]);
 
-      // Stats calculations
-      const stats = useMemo(() => {
-        const totalPaid = payments.filter(p => p.status === 'completed').reduce((s, p) => s + p.amount, 0);
-        const inEscrow = projects.reduce((s, p) => s + (p.funded - p.spent), 0);
-        const pendingMilestones = projects.flatMap(p => p.milestones).filter(m => m.status === 'in_progress').length;
-        const w9Collected = contractors.filter(c => c.w9 === 'collected').length;
-        const tinVerified = contractors.filter(c => c.tinMatch === 'verified').length;
-        return { totalPaid, inEscrow, pendingMilestones, w9Collected, tinVerified, totalContractors: contractors.length };
-      }, [payments, projects, contractors]);
-
-      // Navigation
-      const navItems = [
-        { id: 'dashboard', icon: Icons.dashboard, label: 'Dashboard' },
-        { id: 'projects', icon: Icons.projects, label: 'Projects' },
-        { id: 'contractors', icon: Icons.contractors, label: 'Contractors' },
-        { id: 'payments', icon: Icons.payments, label: 'Payments' },
-        { id: 'invoices', icon: Icons.invoices, label: 'Invoices' },
-        { id: 'compliance', icon: Icons.compliance, label: 'Compliance' },
-        { id: 'settings', icon: Icons.settings, label: 'Settings' },
-      ];
-
-      // Handlers
       const handlePay = (e) => {
         e.preventDefault();
-        const contractor = contractors.find(c => c.id === parseInt(payForm.contractorId));
-        const amount = parseFloat(payForm.amount);
-        const fee = payForm.speed === 'instant' ? amount * 0.02 : payForm.speed === 'express' ? 24.99 : 0;
-        const newPayment = {
-          id: Date.now(), contractorId: parseInt(payForm.contractorId), projectId: null,
-          milestone: payForm.milestone || 'One-off payment', amount, speed: payForm.speed, fee,
-          status: payForm.speed === 'instant' ? 'processing' : 'scheduled', date: new Date().toISOString().split('T')[0], method: 'ACH'
-        };
-        setPayments(prev => [newPayment, ...prev]);
-        setShowPayModal(false);
-        setPayForm({ contractorId: '', amount: '', project: '', milestone: '', speed: 'standard' });
-        addToast(`Payment of $${amount.toLocaleString()} initiated to ${contractor?.name}`);
+        const c = contractors.find(x => x.id === parseInt(payForm.contractor));
+        const amt = parseFloat(payForm.amount);
+        setPayments(prev => [{ id: Date.now(), contractor: c.id, amount: amt, desc: payForm.desc || 'Payment', speed: payForm.speed, status: payForm.speed === 'instant' ? 'processing' : 'scheduled', date: 'Today' }, ...prev]);
+        setPayModal(false);
+        setPayForm({ contractor: '', amount: '', desc: '', speed: 'standard' });
+        addToast(`$${amt.toLocaleString()} initiated to ${c.name}`);
         if (payForm.speed === 'instant') {
           setTimeout(() => {
-            setPayments(prev => prev.map(p => p.id === newPayment.id ? { ...p, status: 'completed' } : p));
-            addToast(`$${amount.toLocaleString()} sent to ${contractor?.name} — Instant!`);
+            setPayments(prev => prev.map(p => p.id === prev[0].id ? { ...p, status: 'completed' } : p));
+            addToast(`$${amt.toLocaleString()} sent instantly!`);
           }, 2000);
         }
       };
 
-      const handleCreateProject = (e) => {
-        e.preventDefault();
-        const template = verticalTemplates[projectForm.vertical];
-        const budget = parseFloat(projectForm.budget);
-        const milestones = template.stages.map((stage, i) => ({
-          id: `m${Date.now()}-${i}`, name: stage, amount: Math.round(budget / template.stages.length), status: 'pending', contractor: null
-        }));
-        const newProject = {
-          id: Date.now(), name: projectForm.name, client: projectForm.client, vertical: projectForm.vertical,
-          budget, funded: 0, spent: 0, status: 'draft', contractors: [], milestones
-        };
-        setProjects(prev => [newProject, ...prev]);
-        setShowProjectModal(false);
-        setProjectForm({ name: '', client: '', vertical: 'software', budget: '' });
-        addToast(`Project "${projectForm.name}" created with ${milestones.length} milestones`);
-      };
-
-      const handleAddContractor = (e) => {
-        e.preventDefault();
-        const initials = contractorForm.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-        const colors = ['bg-blue-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-emerald-500', 'bg-orange-500'];
-        const newContractor = {
-          id: Date.now(), ...contractorForm, status: 'pending', w9: 'requested', tinMatch: 'pending',
-          totalPaid: 0, avatar: colors[Math.floor(Math.random() * colors.length)], initials
-        };
-        setContractors(prev => [newContractor, ...prev]);
-        setShowContractorModal(false);
-        setContractorForm({ name: '', email: '', company: '', type: 'Individual' });
-        addToast(`W-9 request sent to ${contractorForm.name}`);
-      };
-
-      const handleApproveMilestone = (projectId, milestoneId, speed) => {
-        const project = projects.find(p => p.id === projectId);
-        const milestone = project?.milestones.find(m => m.id === milestoneId);
-        if (!milestone) return;
-
-        const contractor = contractors.find(c => c.id === milestone.contractor);
-        const fee = speed === 'instant' ? milestone.amount * 0.02 : speed === 'express' ? 24.99 : 0;
-
-        setProjects(prev => prev.map(p => p.id === projectId ? {
+      const handleApprove = (speed) => {
+        const { project, milestone } = approveModal;
+        const c = contractors.find(x => x.id === milestone.contractor);
+        setProjects(prev => prev.map(p => p.id === project.id ? {
           ...p, spent: p.spent + milestone.amount,
-          milestones: p.milestones.map(m => m.id === milestoneId ? { ...m, status: 'completed' } : m)
+          milestones: p.milestones.map(m => m.id === milestone.id ? { ...m, status: 'completed' } : m)
         } : p));
-
-        const newPayment = {
-          id: Date.now(), contractorId: milestone.contractor, projectId, milestone: milestone.name,
-          amount: milestone.amount, speed, fee, status: speed === 'instant' ? 'processing' : 'scheduled',
-          date: new Date().toISOString().split('T')[0], method: 'ACH'
-        };
-        setPayments(prev => [newPayment, ...prev]);
-        setShowMilestoneApproval(null);
-        addToast(`Milestone "${milestone.name}" approved — $${milestone.amount.toLocaleString()} to ${contractor?.name}`);
-
+        setPayments(prev => [{ id: Date.now(), contractor: milestone.contractor, amount: milestone.amount, desc: milestone.name, speed, status: speed === 'instant' ? 'processing' : 'scheduled', date: 'Today' }, ...prev]);
+        setApproveModal(null);
+        addToast(`${milestone.name} approved — $${milestone.amount.toLocaleString()} to ${c?.name}`);
         if (speed === 'instant') {
           setTimeout(() => {
-            setPayments(prev => prev.map(p => p.id === newPayment.id ? { ...p, status: 'completed' } : p));
-            addToast(`$${milestone.amount.toLocaleString()} sent to ${contractor?.name} — Instant!`);
+            setPayments(prev => prev.map((p, i) => i === 0 ? { ...p, status: 'completed' } : p));
+            addToast(`Instant payout complete!`);
           }, 2000);
         }
       };
 
-      const handleUploadInvoice = () => {
-        const newInvoice = {
-          id: Date.now(), contractor: 'Uploaded Invoice', amount: Math.floor(Math.random() * 5000) + 500,
-          date: new Date().toISOString().split('T')[0], status: 'pending_review',
-          ocrData: { vendor: 'OCR Detected Vendor', amount: Math.floor(Math.random() * 5000) + 500, date: new Date().toISOString().split('T')[0], terms: 'Net 30' }
-        };
-        setInvoices(prev => [newInvoice, ...prev]);
-        setShowInvoiceModal(false);
-        addToast('Invoice uploaded — OCR processing complete', 'success');
-      };
+      const navItems = [
+        { id: 'dashboard', icon: '⌂', label: 'Home' },
+        { id: 'projects', icon: '◧', label: 'Projects' },
+        { id: 'contractors', icon: '◎', label: 'Contractors' },
+        { id: 'payments', icon: '◈', label: 'Payments' },
+        { id: 'compliance', icon: '◉', label: 'Compliance' },
+      ];
 
-      // ============ VIEWS ============
       const DashboardView = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard label="Paid This Month" value={`$${stats.totalPaid.toLocaleString()}`} icon={Icons.trendingUp} trend="+12%" color="blue" />
-            <StatCard label="In Escrow" value={`$${stats.inEscrow.toLocaleString()}`} icon={Icons.compliance} color="emerald" />
-            <StatCard label="Pending Milestones" value={stats.pendingMilestones} icon={Icons.clock} subValue="awaiting approval" color="amber" />
-            <StatCard label="1099 Ready" value={`${stats.w9Collected}/${stats.totalContractors}`} icon={Icons.file} subValue="W-9s collected" color="purple" />
+        <div className="space-y-8">
+          {/* Hero Stats */}
+          <div className="grid grid-cols-4 gap-4">
+            {[
+              { label: 'Paid This Month', value: `$${stats.paid.toLocaleString()}`, sub: '+12% from last month', gradient: 'from-electric-400 to-electric-600', delay: 'stagger-1' },
+              { label: 'In Escrow', value: `$${stats.escrow.toLocaleString()}`, sub: 'Protected funds', gradient: 'from-mint-400 to-mint-600', delay: 'stagger-2' },
+              { label: 'Pending Approval', value: stats.pending, sub: 'Milestones ready', gradient: 'from-gold-400 to-gold-600', delay: 'stagger-3' },
+              { label: '1099 Ready', value: `${stats.w9}/${contractors.length}`, sub: 'W-9s collected', gradient: 'from-coral-400 to-coral-600', delay: 'stagger-4' },
+            ].map((stat, i) => (
+              <div key={i} className={`glass rounded-2xl p-6 hover-lift border border-ink-200/50 animate-slide-up opacity-0 ${stat.delay}`}>
+                <div className="flex items-start justify-between mb-4">
+                  <span className="text-xs font-semibold text-ink-500 uppercase tracking-wider">{stat.label}</span>
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.gradient} opacity-20`} />
+                </div>
+                <div className="font-display text-4xl text-ink-900 mb-1">{stat.value}</div>
+                <div className="text-sm text-ink-500">{stat.sub}</div>
+              </div>
+            ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="font-bold text-gray-900">Active Projects</h3>
-                <button onClick={() => setShowProjectModal(true)} className="text-blue-600 hover:text-blue-700 text-sm font-medium">+ New</button>
+          {/* Projects + Payments Grid */}
+          <div className="grid grid-cols-5 gap-6">
+            {/* Active Projects */}
+            <div className="col-span-3 glass rounded-2xl border border-ink-200/50 overflow-hidden animate-slide-up opacity-0 stagger-2">
+              <div className="px-6 py-5 border-b border-ink-200/50 flex items-center justify-between">
+                <h3 className="font-display text-xl text-ink-900">Active Projects</h3>
+                <span className="text-xs font-mono text-ink-400">{projects.length} total</span>
               </div>
-              <div className="divide-y divide-gray-50">
-                {projects.filter(p => p.status === 'active').slice(0, 4).map(project => (
-                  <div key={project.id} onClick={() => { setSelectedProject(project); setActiveView('projects'); }} className="px-5 py-4 hover:bg-gray-50 cursor-pointer transition-colors">
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <span className="font-medium text-gray-900">{project.name}</span>
-                        <span className="text-gray-400 mx-2">•</span>
-                        <span className="text-sm text-gray-500">{project.client}</span>
+              <div className="divide-y divide-ink-100">
+                {projects.map((project, i) => (
+                  <div key={project.id} className="px-6 py-5 hover:bg-ink-50/50 cursor-pointer transition-colors group">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${verticals[project.vertical].gradient} flex items-center justify-center text-white text-lg font-display`}>
+                          {verticals[project.vertical].icon}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-ink-900 group-hover:text-electric-600 transition-colors">{project.name}</div>
+                          <div className="text-sm text-ink-500">{project.client}</div>
+                        </div>
                       </div>
-                      <Badge variant="info">{verticalTemplates[project.vertical]?.icon} {verticalTemplates[project.vertical]?.name}</Badge>
+                      <div className="text-right">
+                        <div className="font-mono text-lg text-ink-900">${project.spent.toLocaleString()}</div>
+                        <div className="text-xs text-ink-400">of ${project.budget.toLocaleString()}</div>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-4">
-                      <div className="flex-1"><ProgressBar value={project.spent} max={project.budget} size="sm" /></div>
-                      <span className="text-sm text-gray-600">${project.spent.toLocaleString()} / ${project.budget.toLocaleString()}</span>
+                    <div className="h-2 bg-ink-100 rounded-full overflow-hidden">
+                      <div className={`h-full bg-gradient-to-r ${verticals[project.vertical].gradient} rounded-full transition-all duration-1000`} style={{ width: `${(project.spent / project.budget) * 100}%` }} />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="font-bold text-gray-900">Recent Payments</h3>
-                <button onClick={() => setActiveView('payments')} className="text-blue-600 hover:text-blue-700 text-sm font-medium">View all</button>
+            {/* Recent Payments */}
+            <div className="col-span-2 glass rounded-2xl border border-ink-200/50 overflow-hidden animate-slide-up opacity-0 stagger-3">
+              <div className="px-6 py-5 border-b border-ink-200/50">
+                <h3 className="font-display text-xl text-ink-900">Recent Payments</h3>
               </div>
-              <div className="divide-y divide-gray-50">
+              <div className="divide-y divide-ink-100">
                 {payments.slice(0, 5).map(payment => {
-                  const contractor = contractors.find(c => c.id === payment.contractorId);
+                  const c = contractors.find(x => x.id === payment.contractor);
                   return (
-                    <div key={payment.id} className="px-5 py-3 flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-9 h-9 rounded-lg ${contractor?.avatar || 'bg-gray-400'} flex items-center justify-center text-white text-xs font-bold`}>{contractor?.initials}</div>
+                    <div key={payment.id} className="px-6 py-4 flex items-center justify-between hover:bg-ink-50/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${c?.color} flex items-center justify-center text-white text-xs font-bold`}>
+                          {c?.name.split(' ').map(n => n[0]).join('')}
+                        </div>
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{contractor?.name}</div>
-                          <div className="text-xs text-gray-500">{payment.milestone}</div>
+                          <div className="font-medium text-ink-900 text-sm">{c?.name}</div>
+                          <div className="text-xs text-ink-400">{payment.desc}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-bold text-gray-900">${payment.amount.toLocaleString()}</div>
-                        <Badge variant={payment.status === 'completed' ? 'success' : payment.status === 'processing' ? 'warning' : 'default'}>
+                        <div className="font-mono font-semibold text-ink-900">${payment.amount.toLocaleString()}</div>
+                        <div className={`text-xs font-medium ${payment.status === 'completed' ? 'text-mint-600' : payment.status === 'processing' ? 'text-gold-600' : 'text-ink-400'}`}>
                           {payment.status === 'completed' ? '✓ Paid' : payment.status === 'processing' ? '● Processing' : '○ Scheduled'}
-                        </Badge>
+                        </div>
                       </div>
                     </div>
                   );
@@ -417,252 +314,60 @@
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div className="px-5 py-4 border-b border-gray-100">
-              <h3 className="font-bold text-gray-900">Milestones Awaiting Approval</h3>
+          {/* Milestones Awaiting */}
+          <div className="glass rounded-2xl border border-ink-200/50 overflow-hidden animate-slide-up opacity-0 stagger-4">
+            <div className="px-6 py-5 border-b border-ink-200/50">
+              <h3 className="font-display text-xl text-ink-900">Milestones Awaiting Approval</h3>
             </div>
-            <div className="divide-y divide-gray-50">
-              {projects.flatMap(p => p.milestones.filter(m => m.status === 'in_progress').map(m => ({ ...m, project: p }))).slice(0, 4).map(milestone => {
-                const contractor = contractors.find(c => c.id === milestone.contractor);
+            <div className="divide-y divide-ink-100">
+              {projects.flatMap(p => p.milestones.filter(m => m.status === 'in_progress').map(m => ({ ...m, project: p }))).map(milestone => {
+                const c = contractors.find(x => x.id === milestone.contractor);
                 return (
-                  <div key={milestone.id} className="px-5 py-4 flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-10 h-10 rounded-lg ${contractor?.avatar || 'bg-gray-400'} flex items-center justify-center text-white text-sm font-bold`}>{contractor?.initials}</div>
+                  <div key={milestone.id} className="px-6 py-5 flex items-center justify-between hover:bg-ink-50/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${c?.color} flex items-center justify-center text-white font-bold`}>
+                        {c?.name.split(' ').map(n => n[0]).join('')}
+                      </div>
                       <div>
-                        <div className="font-medium text-gray-900">{milestone.name}</div>
-                        <div className="text-sm text-gray-500">{milestone.project.name} • {contractor?.name}</div>
+                        <div className="font-semibold text-ink-900">{milestone.name}</div>
+                        <div className="text-sm text-ink-500">{milestone.project.name} · {c?.name}</div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <span className="text-lg font-bold text-gray-900">${milestone.amount.toLocaleString()}</span>
-                      <button onClick={() => setShowMilestoneApproval({ projectId: milestone.project.id, milestone })} className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    <div className="flex items-center gap-6">
+                      <div className="font-display text-2xl text-ink-900">${milestone.amount.toLocaleString()}</div>
+                      <button onClick={() => setApproveModal({ project: milestone.project, milestone })} className="px-6 py-3 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-electric-500/25 transition-all hover:-translate-y-0.5">
                         Approve & Pay
                       </button>
                     </div>
                   </div>
                 );
               })}
-              {projects.flatMap(p => p.milestones.filter(m => m.status === 'in_progress')).length === 0 && (
-                <div className="px-5 py-8 text-center text-gray-500">No milestones awaiting approval</div>
-              )}
             </div>
-          </div>
-        </div>
-      );
-
-      const ProjectsView = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Icons.search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input type="text" placeholder="Search projects..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
-            </div>
-            <button onClick={() => setShowProjectModal(true)} className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center space-x-2">
-              <Icons.plus className="w-4 h-4" /><span>New Project</span>
-            </button>
-          </div>
-
-          <div className="grid gap-4">
-            {projects.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase())).map(project => (
-              <div key={project.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">{verticalTemplates[project.vertical]?.icon}</div>
-                    <div>
-                      <h3 className="font-bold text-gray-900">{project.name}</h3>
-                      <p className="text-sm text-gray-500">{project.client} • {verticalTemplates[project.vertical]?.name}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <div className="text-lg font-bold text-gray-900">${project.spent.toLocaleString()} <span className="text-gray-400 font-normal">/ ${project.budget.toLocaleString()}</span></div>
-                      <div className="text-sm text-gray-500">Escrow: ${(project.funded - project.spent).toLocaleString()}</div>
-                    </div>
-                    <Badge variant={project.status === 'active' ? 'success' : project.status === 'completed' ? 'info' : 'default'}>{project.status}</Badge>
-                  </div>
-                </div>
-                <div className="px-5 py-4">
-                  <div className="mb-3"><ProgressBar value={project.spent} max={project.budget} /></div>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                    {project.milestones.map(m => (
-                      <div key={m.id} onClick={() => m.status === 'in_progress' && setShowMilestoneApproval({ projectId: project.id, milestone: m })} className={`p-3 rounded-lg border text-center cursor-pointer transition-all ${m.status === 'completed' ? 'bg-emerald-50 border-emerald-200' : m.status === 'in_progress' ? 'bg-amber-50 border-amber-200 hover:border-amber-400' : 'bg-gray-50 border-gray-200'}`}>
-                        <div className="text-xs font-medium text-gray-600 truncate">{m.name}</div>
-                        <div className="text-sm font-bold text-gray-900">${m.amount.toLocaleString()}</div>
-                        <div className="text-xs mt-1">{m.status === 'completed' ? '✓' : m.status === 'in_progress' ? '●' : '○'}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       );
 
       const ContractorsView = () => (
         <div className="space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Icons.search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input type="text" placeholder="Search contractors..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
-            </div>
-            <button onClick={() => setShowContractorModal(true)} className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center space-x-2">
-              <Icons.plus className="w-4 h-4" /><span>Add Contractor</span>
-            </button>
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Contractor</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">W-9</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">TIN Match</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Total Paid</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {contractors.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map(contractor => (
-                    <tr key={contractor.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-5 py-4">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-10 h-10 rounded-lg ${contractor.avatar} flex items-center justify-center text-white text-sm font-bold`}>{contractor.initials}</div>
-                          <div>
-                            <div className="font-medium text-gray-900">{contractor.name}</div>
-                            <div className="text-sm text-gray-500">{contractor.email}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4"><Badge variant={contractor.type === 'Business' ? 'purple' : 'default'}>{contractor.type}</Badge></td>
-                      <td className="px-5 py-4"><Badge variant={contractor.w9 === 'collected' ? 'success' : contractor.w9 === 'requested' ? 'warning' : 'error'}>{contractor.w9 === 'collected' ? '✓ Collected' : contractor.w9 === 'requested' ? '● Requested' : '○ Pending'}</Badge></td>
-                      <td className="px-5 py-4"><Badge variant={contractor.tinMatch === 'verified' ? 'success' : 'warning'}>{contractor.tinMatch === 'verified' ? '✓ Verified' : '● Pending'}</Badge></td>
-                      <td className="px-5 py-4 text-right font-bold text-gray-900">${contractor.totalPaid.toLocaleString()}</td>
-                      <td className="px-5 py-4 text-center">
-                        <button onClick={() => { setPayForm({ ...payForm, contractorId: contractor.id.toString() }); setShowPayModal(true); }} className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">Pay</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      );
-
-      const PaymentsView = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <Icons.search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="text" placeholder="Search payments..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-64" />
-              </div>
-              <select className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                <option>All Status</option><option>Completed</option><option>Processing</option><option>Scheduled</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button className="px-4 py-2 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors flex items-center space-x-2">
-                <Icons.download className="w-4 h-4" /><span>Export CSV</span>
-              </button>
-              <button onClick={() => setShowPayModal(true)} className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center space-x-2">
-                <Icons.plus className="w-4 h-4" /><span>New Payment</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Contractor</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Description</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Amount</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Speed</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Fee</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Status</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {payments.map(payment => {
-                    const contractor = contractors.find(c => c.id === payment.contractorId);
-                    return (
-                      <tr key={payment.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4">
-                          <div className="flex items-center space-x-3">
-                            <div className={`w-9 h-9 rounded-lg ${contractor?.avatar || 'bg-gray-400'} flex items-center justify-center text-white text-xs font-bold`}>{contractor?.initials}</div>
-                            <span className="font-medium text-gray-900">{contractor?.name}</span>
-                          </div>
-                        </td>
-                        <td className="px-5 py-4 text-sm text-gray-600">{payment.milestone}</td>
-                        <td className="px-5 py-4 text-right font-bold text-gray-900">${payment.amount.toLocaleString()}</td>
-                        <td className="px-5 py-4 text-center">
-                          <Badge variant={payment.speed === 'instant' ? 'info' : payment.speed === 'express' ? 'purple' : 'default'}>
-                            {payment.speed === 'instant' && <Icons.lightning className="w-3 h-3 inline mr-1" />}
-                            {payment.speed.charAt(0).toUpperCase() + payment.speed.slice(1)}
-                          </Badge>
-                        </td>
-                        <td className="px-5 py-4 text-right text-sm text-gray-500">{payment.fee > 0 ? `$${payment.fee.toFixed(2)}` : 'Free'}</td>
-                        <td className="px-5 py-4 text-center">
-                          <Badge variant={payment.status === 'completed' ? 'success' : payment.status === 'processing' ? 'warning' : 'default'}>
-                            {payment.status === 'completed' ? '✓ Paid' : payment.status === 'processing' ? '● Processing' : '○ Scheduled'}
-                          </Badge>
-                        </td>
-                        <td className="px-5 py-4 text-sm text-gray-500">{payment.date}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      );
-
-      const InvoicesView = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-gray-900">External Invoices (OCR)</h2>
-            <button onClick={() => setShowInvoiceModal(true)} className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center space-x-2">
-              <Icons.upload className="w-4 h-4" /><span>Upload Invoice</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {invoices.map(invoice => (
-              <div key={invoice.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center"><Icons.file className="w-6 h-6 text-gray-400" /></div>
-                    <div>
-                      <div className="font-medium text-gray-900">{invoice.ocrData?.vendor || invoice.contractor}</div>
-                      <div className="text-sm text-gray-500">Uploaded {invoice.date}</div>
-                    </div>
+          <div className="grid grid-cols-3 gap-4">
+            {contractors.map((c, i) => (
+              <div key={c.id} className={`glass rounded-2xl p-6 hover-lift border border-ink-200/50 animate-slide-up opacity-0 stagger-${i + 1}`}>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${c.color} flex items-center justify-center text-white text-lg font-bold`}>
+                    {c.name.split(' ').map(n => n[0]).join('')}
                   </div>
-                  <Badge variant={invoice.status === 'approved' ? 'success' : invoice.status === 'pending_review' ? 'warning' : 'default'}>
-                    {invoice.status === 'approved' ? '✓ Approved' : '● Review'}
-                  </Badge>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div><span className="text-gray-500">Amount:</span> <span className="font-bold text-gray-900">${invoice.ocrData?.amount?.toLocaleString()}</span></div>
-                    <div><span className="text-gray-500">Terms:</span> <span className="font-medium text-gray-900">{invoice.ocrData?.terms}</span></div>
-                    <div><span className="text-gray-500">Invoice Date:</span> <span className="text-gray-900">{invoice.ocrData?.date}</span></div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-ink-900">{c.name}</div>
+                    <div className="text-sm text-ink-500">{c.company}</div>
+                    <div className="text-xs text-ink-400 font-mono mt-1">{c.email}</div>
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  {invoice.status === 'pending_review' && (
-                    <>
-                      <button onClick={() => { setInvoices(prev => prev.map(i => i.id === invoice.id ? { ...i, status: 'approved' } : i)); addToast('Invoice approved'); }} className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">Approve & Pay</button>
-                      <button className="px-4 py-2 border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">Edit</button>
-                    </>
-                  )}
-                  {invoice.status === 'approved' && <button className="flex-1 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg">✓ Paid</button>}
+                <div className="flex items-center justify-between pt-4 border-t border-ink-100">
+                  <div className="flex gap-2">
+                    <span className={`px-2 py-1 rounded-lg text-xs font-medium ${c.w9 === 'collected' ? 'bg-mint-100 text-mint-700' : 'bg-gold-100 text-gold-700'}`}>W-9 {c.w9 === 'collected' ? '✓' : '●'}</span>
+                    <span className={`px-2 py-1 rounded-lg text-xs font-medium ${c.tin === 'verified' ? 'bg-electric-100 text-electric-700' : 'bg-gold-100 text-gold-700'}`}>TIN {c.tin === 'verified' ? '✓' : '●'}</span>
+                  </div>
+                  <div className="font-mono font-semibold text-ink-900">${c.paid.toLocaleString()}</div>
                 </div>
               </div>
             ))}
@@ -670,268 +375,249 @@
         </div>
       );
 
+      const PaymentsView = () => (
+        <div className="glass rounded-2xl border border-ink-200/50 overflow-hidden animate-fade-in">
+          <div className="px-6 py-5 border-b border-ink-200/50 flex items-center justify-between">
+            <h3 className="font-display text-xl text-ink-900">All Payments</h3>
+            <button onClick={() => setPayModal(true)} className="px-5 py-2.5 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-electric-500/25 transition-all text-sm">
+              + New Payment
+            </button>
+          </div>
+          <table className="w-full">
+            <thead className="bg-ink-50/50 border-b border-ink-100">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-ink-500 uppercase tracking-wider">Contractor</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-ink-500 uppercase tracking-wider">Description</th>
+                <th className="px-6 py-4 text-right text-xs font-semibold text-ink-500 uppercase tracking-wider">Amount</th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase tracking-wider">Speed</th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-right text-xs font-semibold text-ink-500 uppercase tracking-wider">Date</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-ink-100">
+              {payments.map(payment => {
+                const c = contractors.find(x => x.id === payment.contractor);
+                return (
+                  <tr key={payment.id} className="hover:bg-ink-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${c?.color} flex items-center justify-center text-white text-xs font-bold`}>{c?.name.split(' ').map(n => n[0]).join('')}</div>
+                        <span className="font-medium text-ink-900">{c?.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-ink-600">{payment.desc}</td>
+                    <td className="px-6 py-4 text-right font-mono font-semibold text-ink-900">${payment.amount.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${payment.speed === 'instant' ? 'bg-electric-100 text-electric-700' : payment.speed === 'express' ? 'bg-gold-100 text-gold-700' : 'bg-ink-100 text-ink-600'}`}>
+                        {payment.speed === 'instant' ? '⚡ Instant' : payment.speed === 'express' ? '→ Express' : '○ Standard'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`font-medium ${payment.status === 'completed' ? 'text-mint-600' : payment.status === 'processing' ? 'text-gold-600' : 'text-ink-400'}`}>
+                        {payment.status === 'completed' ? '✓ Paid' : payment.status === 'processing' ? '● Processing' : '○ Scheduled'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right text-ink-500 font-mono text-sm">{payment.date}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      );
+
       const ComplianceView = () => (
         <div className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <StatCard label="W-9s Collected" value={`${stats.w9Collected}/${stats.totalContractors}`} icon={Icons.file} color="emerald" />
-            <StatCard label="TINs Verified" value={`${stats.tinVerified}/${stats.totalContractors}`} icon={Icons.check} color="blue" />
-            <StatCard label="1099s to File" value={contractors.filter(c => c.totalPaid >= 600).length} icon={Icons.mail} subValue="≥$600 paid" color="purple" />
+          <div className="grid grid-cols-3 gap-4">
+            {[
+              { label: 'W-9s Collected', value: `${stats.w9}/${contractors.length}`, gradient: 'from-mint-400 to-mint-600' },
+              { label: 'TINs Verified', value: `${contractors.filter(c => c.tin === 'verified').length}/${contractors.length}`, gradient: 'from-electric-400 to-electric-600' },
+              { label: '1099s to File', value: contractors.filter(c => c.paid >= 600).length, gradient: 'from-coral-400 to-coral-600' },
+            ].map((stat, i) => (
+              <div key={i} className={`glass rounded-2xl p-6 border border-ink-200/50 animate-slide-up opacity-0 stagger-${i + 1}`}>
+                <div className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">{stat.label}</div>
+                <div className="font-display text-4xl text-ink-900">{stat.value}</div>
+              </div>
+            ))}
           </div>
-
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-bold text-gray-900">1099 Preparation Status</h3>
-              <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors">Generate 1099s</button>
+          <div className="glass rounded-2xl border border-ink-200/50 overflow-hidden">
+            <div className="px-6 py-5 border-b border-ink-200/50 flex items-center justify-between">
+              <h3 className="font-display text-xl text-ink-900">1099 Preparation</h3>
+              <button className="px-5 py-2.5 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl text-sm">Generate 1099s</button>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Contractor</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase">YTD Payments</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase">W-9</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase">TIN Match</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase">1099 Status</th>
+            <table className="w-full">
+              <thead className="bg-ink-50/50 border-b border-ink-100">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-ink-500 uppercase">Contractor</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-ink-500 uppercase">YTD Paid</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase">W-9</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase">TIN</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink-100">
+                {contractors.filter(c => c.paid >= 600).map(c => (
+                  <tr key={c.id} className="hover:bg-ink-50/50">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center text-white text-xs font-bold`}>{c.name.split(' ').map(n => n[0]).join('')}</div>
+                        <div><div className="font-medium text-ink-900">{c.name}</div><div className="text-xs text-ink-400">{c.company}</div></div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono font-semibold text-ink-900">${c.paid.toLocaleString()}</td>
+                    <td className="px-6 py-4 text-center"><span className={`${c.w9 === 'collected' ? 'text-mint-600' : 'text-gold-600'}`}>{c.w9 === 'collected' ? '✓' : '●'}</span></td>
+                    <td className="px-6 py-4 text-center"><span className={`${c.tin === 'verified' ? 'text-mint-600' : 'text-gold-600'}`}>{c.tin === 'verified' ? '✓' : '●'}</span></td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${c.w9 === 'collected' && c.tin === 'verified' ? 'bg-mint-100 text-mint-700' : 'bg-gold-100 text-gold-700'}`}>
+                        {c.w9 === 'collected' && c.tin === 'verified' ? 'Ready' : 'Incomplete'}
+                      </span>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {contractors.filter(c => c.totalPaid >= 600).map(contractor => (
-                    <tr key={contractor.id} className="hover:bg-gray-50">
-                      <td className="px-5 py-4">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-9 h-9 rounded-lg ${contractor.avatar} flex items-center justify-center text-white text-xs font-bold`}>{contractor.initials}</div>
-                          <div>
-                            <div className="font-medium text-gray-900">{contractor.name}</div>
-                            <div className="text-sm text-gray-500">{contractor.company}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-5 py-4 text-right font-bold text-gray-900">${contractor.totalPaid.toLocaleString()}</td>
-                      <td className="px-5 py-4 text-center"><Badge variant={contractor.w9 === 'collected' ? 'success' : 'warning'}>{contractor.w9 === 'collected' ? '✓' : '●'}</Badge></td>
-                      <td className="px-5 py-4 text-center"><Badge variant={contractor.tinMatch === 'verified' ? 'success' : 'warning'}>{contractor.tinMatch === 'verified' ? '✓' : '●'}</Badge></td>
-                      <td className="px-5 py-4 text-center"><Badge variant={contractor.w9 === 'collected' && contractor.tinMatch === 'verified' ? 'success' : 'warning'}>{contractor.w9 === 'collected' && contractor.tinMatch === 'verified' ? 'Ready' : 'Incomplete'}</Badge></td>
-                    </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+
+      const ProjectsView = () => (
+        <div className="space-y-4 animate-fade-in">
+          {projects.map((project, i) => (
+            <div key={project.id} className={`glass rounded-2xl border border-ink-200/50 overflow-hidden hover-lift animate-slide-up opacity-0 stagger-${i + 1}`}>
+              <div className="px-6 py-5 flex items-center justify-between border-b border-ink-200/50">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${verticals[project.vertical].gradient} flex items-center justify-center text-white text-xl font-display`}>
+                    {verticals[project.vertical].icon}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-ink-900 text-lg">{project.name}</h3>
+                    <p className="text-sm text-ink-500">{project.client} · {verticals[project.vertical].name}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-mono text-xl text-ink-900">${project.spent.toLocaleString()} <span className="text-ink-400 text-sm">/ ${project.budget.toLocaleString()}</span></div>
+                  <div className="text-sm text-ink-500">Escrow: ${(project.funded - project.spent).toLocaleString()}</div>
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="h-3 bg-ink-100 rounded-full overflow-hidden mb-4">
+                  <div className={`h-full bg-gradient-to-r ${verticals[project.vertical].gradient} rounded-full`} style={{ width: `${(project.spent / project.budget) * 100}%` }} />
+                </div>
+                <div className="grid grid-cols-4 gap-3">
+                  {project.milestones.map(m => (
+                    <div key={m.id} onClick={() => m.status === 'in_progress' && setApproveModal({ project, milestone: m })} className={`p-4 rounded-xl border text-center cursor-pointer transition-all ${m.status === 'completed' ? 'bg-mint-50 border-mint-200' : m.status === 'in_progress' ? 'bg-gold-50 border-gold-200 hover:border-gold-400 hover:shadow-md' : 'bg-ink-50 border-ink-200'}`}>
+                      <div className="text-sm font-medium text-ink-700 mb-1">{m.name}</div>
+                      <div className="font-mono font-semibold text-ink-900">${m.amount.toLocaleString()}</div>
+                      <div className="text-lg mt-1">{m.status === 'completed' ? '✓' : m.status === 'in_progress' ? '●' : '○'}</div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       );
 
-      const SettingsView = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Company Information</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div><label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label><input type="text" defaultValue="Acme Agency LLC" className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" /></div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-1">EIN</label><input type="text" defaultValue="XX-XXXXXXX" className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" /></div>
-            </div>
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Payment Settings</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                <div><div className="font-medium text-gray-900">Default Payout Speed</div><div className="text-sm text-gray-500">Standard (7-day) — Free</div></div>
-                <select className="px-4 py-2 border border-gray-200 rounded-xl text-sm"><option>Standard (Free)</option><option>Express ($24.99)</option><option>Instant (2%)</option></select>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                <div><div className="font-medium text-gray-900">Bank Account</div><div className="text-sm text-gray-500">Chase ****4521</div></div>
-                <button className="px-4 py-2 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-100">Change</button>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-            <h3 className="font-bold text-gray-900 mb-4">Integrations</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                <div className="flex items-center space-x-3"><div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 font-bold text-sm">QB</div><div><div className="font-medium text-gray-900">QuickBooks Online</div><div className="text-sm text-gray-500">Real-time sync enabled</div></div></div>
-                <Badge variant="success">Connected</Badge>
-              </div>
-              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                <div className="flex items-center space-x-3"><div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm">DS</div><div><div className="font-medium text-gray-900">DocuSign</div><div className="text-sm text-gray-500">E-signature for contracts</div></div></div>
-                <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700">Connect</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-
-      const views = { dashboard: DashboardView, projects: ProjectsView, contractors: ContractorsView, payments: PaymentsView, invoices: InvoicesView, compliance: ComplianceView, settings: SettingsView };
-      const CurrentView = views[activeView];
+      const views = { dashboard: DashboardView, projects: ProjectsView, contractors: ContractorsView, payments: PaymentsView, compliance: ComplianceView };
+      const CurrentView = views[view];
 
       return (
-        <div className="relative w-full max-w-7xl mx-auto rounded-2xl overflow-hidden bg-gray-50 shadow-2xl shadow-black/25">
-          <div className="flex h-[700px]">
-            {/* Sidebar */}
-            <div className="w-16 bg-white border-r border-gray-100 flex flex-col items-center py-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 mb-6">
-                <svg viewBox="0 0 24 24" className="w-6 h-6 text-white" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <div className="w-full max-w-7xl mx-auto">
+          <div className="glass rounded-3xl overflow-hidden border border-ink-200/50 shadow-2xl">
+            <div className="flex h-[720px]">
+              {/* Sidebar */}
+              <div className="w-20 bg-ink-900/95 backdrop-blur-xl flex flex-col items-center py-6 border-r border-ink-800">
+                <div className="w-12 h-12 bg-gradient-to-br from-electric-400 to-mint-500 rounded-2xl flex items-center justify-center mb-8 animate-glow">
+                  <span className="text-white text-2xl font-display">P</span>
+                </div>
+                <nav className="flex flex-col items-center gap-2 flex-1">
+                  {navItems.map(item => (
+                    <button key={item.id} onClick={() => setView(item.id)} className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all text-xl ${view === item.id ? 'bg-white/10 text-white' : 'text-ink-500 hover:text-ink-300 hover:bg-white/5'}`} title={item.label}>
+                      {item.icon}
+                    </button>
+                  ))}
+                </nav>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 flex items-center justify-center text-white text-sm font-bold">JD</div>
               </div>
-              <nav className="flex flex-col items-center space-y-1 flex-1">
-                {navItems.map(item => (
-                  <button key={item.id} onClick={() => setActiveView(item.id)} className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all group relative ${activeView === item.id ? 'bg-blue-50' : 'hover:bg-gray-50'}`} title={item.label}>
-                    <item.icon className={`w-5 h-5 ${activeView === item.id ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
-                    {activeView === item.id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 rounded-r-full" />}
-                  </button>
-                ))}
-              </nav>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-semibold shadow-lg">JD</div>
-            </div>
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <div className="bg-white border-b border-gray-100 px-6 py-4">
-                <div className="flex items-center justify-between">
+              {/* Main */}
+              <div className="flex-1 flex flex-col bg-ink-50/50">
+                <div className="px-8 py-6 border-b border-ink-200/50 bg-white/50 backdrop-blur-sm flex items-center justify-between">
                   <div>
-                    <h1 className="text-xl font-bold text-gray-900 capitalize">{activeView}</h1>
-                    <p className="text-sm text-gray-500">Contractor payments & compliance</p>
+                    <h1 className="font-display text-3xl text-ink-900 capitalize">{view}</h1>
+                    <p className="text-ink-500">Contractor payments & compliance</p>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    {activeView === 'dashboard' && <button onClick={() => setShowPayModal(true)} className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-500/30 flex items-center space-x-2"><Icons.plus className="w-4 h-4" /><span>Pay Contractor</span></button>}
-                  </div>
+                  {view === 'dashboard' && (
+                    <button onClick={() => setPayModal(true)} className="px-6 py-3 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-electric-500/25 transition-all hover:-translate-y-0.5 flex items-center gap-2">
+                      <span className="text-lg">+</span> Pay Contractor
+                    </button>
+                  )}
+                </div>
+                <div className="flex-1 overflow-y-auto p-8 scrollbar-hidden">
+                  <CurrentView />
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto p-6 scrollbar-thin"><CurrentView /></div>
             </div>
           </div>
 
-          {/* Modals */}
-          <Modal isOpen={showPayModal} onClose={() => setShowPayModal(false)} title="Pay Contractor">
-            <form onSubmit={handlePay} className="space-y-4">
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Contractor</label>
-                <select value={payForm.contractorId} onChange={e => setPayForm({ ...payForm, contractorId: e.target.value })} required className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                  <option value="">Select contractor...</option>{contractors.map(c => <option key={c.id} value={c.id}>{c.name} — {c.email}</option>)}
+          {/* Pay Modal */}
+          <Modal open={payModal} onClose={() => setPayModal(false)} title="Pay Contractor">
+            <form onSubmit={handlePay} className="space-y-5">
+              <div>
+                <label className="block text-sm font-semibold text-ink-700 mb-2">Contractor</label>
+                <select value={payForm.contractor} onChange={e => setPayForm({ ...payForm, contractor: e.target.value })} required className="w-full px-4 py-3 border border-ink-200 rounded-xl focus:ring-2 focus:ring-electric-500 focus:border-transparent outline-none bg-white">
+                  <option value="">Select...</option>
+                  {contractors.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Amount (USD)</label>
-                <div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                  <input type="number" value={payForm.amount} onChange={e => setPayForm({ ...payForm, amount: e.target.value })} required min="1" step="0.01" className="w-full pl-8 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0.00" />
+              <div>
+                <label className="block text-sm font-semibold text-ink-700 mb-2">Amount</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-400 font-mono">$</span>
+                  <input type="number" value={payForm.amount} onChange={e => setPayForm({ ...payForm, amount: e.target.value })} required min="1" className="w-full pl-8 pr-4 py-3 border border-ink-200 rounded-xl focus:ring-2 focus:ring-electric-500 outline-none font-mono" placeholder="0.00" />
                 </div>
               </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <input type="text" value={payForm.milestone} onChange={e => setPayForm({ ...payForm, milestone: e.target.value })} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Invoice #123 or milestone name" />
-              </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Payout Speed</label>
+              <div>
+                <label className="block text-sm font-semibold text-ink-700 mb-2">Payout Speed</label>
                 <div className="grid grid-cols-3 gap-3">
-                  {[{ id: 'standard', label: 'Standard', sub: '7 days • Free' }, { id: 'express', label: 'Express', sub: '24 hrs • $24.99' }, { id: 'instant', label: 'Instant', sub: '< 30 sec • 2%' }].map(opt => (
-                    <button key={opt.id} type="button" onClick={() => setPayForm({ ...payForm, speed: opt.id })} className={`px-4 py-3 rounded-xl border-2 transition-all text-left ${payForm.speed === opt.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <div className="text-sm font-medium text-gray-900">{opt.label}</div><div className="text-xs text-gray-500">{opt.sub}</div>
+                  {[{ id: 'standard', label: 'Standard', sub: '7 days · Free' }, { id: 'express', label: 'Express', sub: '24 hrs · $24.99' }, { id: 'instant', label: 'Instant', sub: '< 30s · 2%' }].map(opt => (
+                    <button key={opt.id} type="button" onClick={() => setPayForm({ ...payForm, speed: opt.id })} className={`p-4 rounded-xl border-2 transition-all text-left ${payForm.speed === opt.id ? 'border-electric-500 bg-electric-50' : 'border-ink-200 hover:border-ink-300'}`}>
+                      <div className="font-semibold text-ink-900">{opt.label}</div>
+                      <div className="text-xs text-ink-500">{opt.sub}</div>
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="pt-4 flex space-x-3">
-                <button type="button" onClick={() => setShowPayModal(false)} className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium">Cancel</button>
-                <button type="submit" className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium shadow-lg shadow-blue-500/30">Send Payment</button>
+              <div className="pt-4 flex gap-3">
+                <button type="button" onClick={() => setPayModal(false)} className="flex-1 px-6 py-3 border border-ink-200 text-ink-700 rounded-xl hover:bg-ink-50 font-semibold">Cancel</button>
+                <button type="submit" className="flex-1 px-6 py-3 bg-gradient-to-r from-electric-500 to-mint-500 text-white rounded-xl font-semibold hover:shadow-lg">Send</button>
               </div>
             </form>
           </Modal>
 
-          <Modal isOpen={showProjectModal} onClose={() => setShowProjectModal(false)} title="Create Project">
-            <form onSubmit={handleCreateProject} className="space-y-4">
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
-                <input type="text" value={projectForm.name} onChange={e => setProjectForm({ ...projectForm, name: e.target.value })} required className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Website Redesign" />
-              </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Client</label>
-                <input type="text" value={projectForm.client} onChange={e => setProjectForm({ ...projectForm, client: e.target.value })} required className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Acme Corp" />
-              </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Vertical Template</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {Object.entries(verticalTemplates).map(([key, val]) => (
-                    <button key={key} type="button" onClick={() => setProjectForm({ ...projectForm, vertical: key })} className={`p-4 rounded-xl border-2 text-left transition-all ${projectForm.vertical === key ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <div className="text-2xl mb-1">{val.icon}</div><div className="text-sm font-medium text-gray-900">{val.name}</div><div className="text-xs text-gray-500">{val.stages.length} stages</div>
+          {/* Approve Modal */}
+          <Modal open={!!approveModal} onClose={() => setApproveModal(null)} title="Approve & Pay">
+            {approveModal && (
+              <div className="space-y-5">
+                <div className="bg-ink-50 rounded-xl p-5">
+                  <div className="text-ink-600 mb-1">{approveModal.milestone.name}</div>
+                  <div className="font-display text-4xl text-ink-900">${approveModal.milestone.amount.toLocaleString()}</div>
+                </div>
+                <div className="space-y-2">
+                  {[{ id: 'standard', label: 'Standard (7 days)', fee: 'Free' }, { id: 'express', label: 'Express (24 hours)', fee: '$24.99' }, { id: 'instant', label: 'Instant (< 30 sec)', fee: `$${(approveModal.milestone.amount * 0.02).toFixed(2)}` }].map(opt => (
+                    <button key={opt.id} onClick={() => handleApprove(opt.id)} className="w-full p-5 rounded-xl border-2 border-ink-200 hover:border-electric-500 hover:bg-electric-50 transition-all flex items-center justify-between">
+                      <span className="font-semibold text-ink-900">{opt.label}</span>
+                      <span className="font-mono text-ink-600">{opt.fee}</span>
                     </button>
                   ))}
-                </div>
-              </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Total Budget (USD)</label>
-                <div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                  <input type="number" value={projectForm.budget} onChange={e => setProjectForm({ ...projectForm, budget: e.target.value })} required min="100" className="w-full pl-8 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="10000" />
-                </div>
-              </div>
-              <div className="pt-4 flex space-x-3">
-                <button type="button" onClick={() => setShowProjectModal(false)} className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium">Cancel</button>
-                <button type="submit" className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium">Create Project</button>
-              </div>
-            </form>
-          </Modal>
-
-          <Modal isOpen={showContractorModal} onClose={() => setShowContractorModal(false)} title="Add Contractor">
-            <form onSubmit={handleAddContractor} className="space-y-4">
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Full Name / Business Name</label>
-                <input type="text" value={contractorForm.name} onChange={e => setContractorForm({ ...contractorForm, name: e.target.value })} required className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Sarah Mitchell" />
-              </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input type="email" value={contractorForm.email} onChange={e => setContractorForm({ ...contractorForm, email: e.target.value })} required className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="sarah@example.com" />
-              </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Company (optional)</label>
-                <input type="text" value={contractorForm.company} onChange={e => setContractorForm({ ...contractorForm, company: e.target.value })} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Mitchell Design Co" />
-              </div>
-              <div><label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {['Individual', 'Business'].map(type => (
-                    <button key={type} type="button" onClick={() => setContractorForm({ ...contractorForm, type })} className={`px-4 py-3 rounded-xl border-2 transition-all ${contractorForm.type === type ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <div className="text-sm font-medium text-gray-900">{type}</div><div className="text-xs text-gray-500">{type === 'Individual' ? 'W-9 required' : 'W-9 required'}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-blue-50 rounded-xl p-4 text-sm text-blue-800">
-                <strong>W-9 Request:</strong> A W-9 form request will be sent automatically to collect tax information.
-              </div>
-              <div className="pt-4 flex space-x-3">
-                <button type="button" onClick={() => setShowContractorModal(false)} className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium">Cancel</button>
-                <button type="submit" className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium">Add & Send W-9</button>
-              </div>
-            </form>
-          </Modal>
-
-          <Modal isOpen={showInvoiceModal} onClose={() => setShowInvoiceModal(false)} title="Upload External Invoice">
-            <div className="space-y-4">
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" onClick={handleUploadInvoice}>
-                <Icons.upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="font-medium text-gray-900">Drop invoice here or click to upload</p>
-                <p className="text-sm text-gray-500 mt-1">PDF, PNG, JPG up to 10MB</p>
-              </div>
-              <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-600">
-                <strong>OCR Processing:</strong> We'll automatically extract vendor, amount, date, and terms from your invoice.
-              </div>
-            </div>
-          </Modal>
-
-          <Modal isOpen={!!showMilestoneApproval} onClose={() => setShowMilestoneApproval(null)} title="Approve Milestone & Pay">
-            {showMilestoneApproval && (
-              <div className="space-y-4">
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="font-medium text-gray-900 mb-1">{showMilestoneApproval.milestone.name}</div>
-                  <div className="text-2xl font-bold text-gray-900">${showMilestoneApproval.milestone.amount.toLocaleString()}</div>
-                </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-2">Select Payout Speed</label>
-                  <div className="space-y-2">
-                    {[{ id: 'standard', label: 'Standard (7 days)', sub: 'Free — ACH transfer', fee: '$0' }, { id: 'express', label: 'Express (24 hours)', sub: 'Priority processing', fee: '$24.99' }, { id: 'instant', label: 'Instant (< 30 sec)', sub: 'Same-day payout', fee: `$${(showMilestoneApproval.milestone.amount * 0.02).toFixed(2)} (2%)` }].map(opt => (
-                      <button key={opt.id} onClick={() => handleApproveMilestone(showMilestoneApproval.projectId, showMilestoneApproval.milestone.id, opt.id)} className="w-full p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left flex items-center justify-between">
-                        <div><div className="font-medium text-gray-900">{opt.label}</div><div className="text-sm text-gray-500">{opt.sub}</div></div>
-                        <div className="text-right"><div className="font-bold text-gray-900">{opt.fee}</div></div>
-                      </button>
-                    ))}
-                  </div>
                 </div>
               </div>
             )}
           </Modal>
 
           {/* Toasts */}
-          <div className="absolute bottom-4 right-4 space-y-2 z-50">
-            {toasts.map(toast => <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />)}
-          </div>
-
-          {/* Compliance Badge */}
-          <div className="absolute top-4 right-4">
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-100 px-3 py-2 flex items-center space-x-2">
-              <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center"><Icons.check className="w-3 h-3 text-emerald-600" /></div>
-              <span className="text-xs font-semibold text-gray-700">{stats.w9Collected}/{stats.totalContractors} W-9s</span>
-            </div>
+          <div className="fixed bottom-6 right-6 space-y-3 z-50">
+            {toasts.map(t => <Toast key={t.id} msg={t.msg} onClose={() => setToasts(prev => prev.filter(x => x.id !== t.id))} />)}
           </div>
         </div>
       );
