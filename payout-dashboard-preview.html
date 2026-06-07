@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PayoutMate — Contractor Payments & Compliance</title>
+  <title>PayoutMate — Contractor Payments & Compliance Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            display: ['Instrument Serif', 'Georgia', 'serif'],
-            body: ['DM Sans', 'system-ui', 'sans-serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
-            ink: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a', 950: '#020617' },
-            electric: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
-            mint: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
-            coral: { 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48' },
-            gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+            navy: { 50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8', 400: '#829ab1', 500: '#627d98', 600: '#486581', 700: '#334e68', 800: '#243b53', 900: '#102a43', 950: '#0a1929' },
+            fire: { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12' },
+            success: { 400: '#4ade80', 500: '#22c55e', 600: '#16a34a' },
+            warning: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+            info: { 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb' },
           }
         }
       }
@@ -28,139 +27,275 @@
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --gradient-mesh: radial-gradient(at 40% 20%, hsla(199,89%,48%,0.15) 0px, transparent 50%),
-                       radial-gradient(at 80% 0%, hsla(158,64%,52%,0.1) 0px, transparent 50%),
-                       radial-gradient(at 0% 50%, hsla(355,78%,60%,0.08) 0px, transparent 50%),
-                       radial-gradient(at 80% 50%, hsla(42,96%,56%,0.08) 0px, transparent 50%),
-                       radial-gradient(at 0% 100%, hsla(199,89%,48%,0.1) 0px, transparent 50%);
-      --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
-    }
-    * { font-family: 'DM Sans', system-ui, sans-serif; }
-    .font-display { font-family: 'Instrument Serif', Georgia, serif; }
+    * { font-family: 'Inter', system-ui, sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
-    @keyframes gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-    @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.3); } 50% { box-shadow: 0 0 40px rgba(14, 165, 233, 0.5); } }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.3); } 50% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.5); } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    .animate-float { animation: float 6s ease-in-out infinite; }
-    .animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-    .animate-gradient { animation: gradient-shift 8s ease infinite; background-size: 200% 200%; }
-    .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
-    .animate-shimmer { animation: shimmer 2s linear infinite; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); background-size: 200% 100%; }
+    .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+    .animate-slideUp { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-slideDown { animation: slideDown 0.4s ease-out forwards; }
+    .animate-slideInRight { animation: slideInRight 0.4s ease-out forwards; }
+    .animate-scaleIn { animation: scaleIn 0.3s ease-out forwards; }
+    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+    .animate-shimmer { animation: shimmer 2s linear infinite; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); background-size: 200% 100%; }
     .animate-glow { animation: glow 2s ease-in-out infinite; }
+    .animate-bounce { animation: bounce 1s ease-in-out infinite; }
+    .animate-spin { animation: spin 1s linear infinite; }
 
-    .noise-overlay::before { content: ''; position: absolute; inset: 0; background-image: var(--noise); opacity: 0.03; pointer-events: none; mix-blend-mode: overlay; }
-    .mesh-bg { background-image: var(--gradient-mesh); }
+    /* Stagger delays */
+    .delay-1 { animation-delay: 0.05s; opacity: 0; }
+    .delay-2 { animation-delay: 0.1s; opacity: 0; }
+    .delay-3 { animation-delay: 0.15s; opacity: 0; }
+    .delay-4 { animation-delay: 0.2s; opacity: 0; }
+    .delay-5 { animation-delay: 0.25s; opacity: 0; }
+    .delay-6 { animation-delay: 0.3s; opacity: 0; }
 
-    .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-    .glass-dark { background: rgba(15,23,42,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    /* Hover effects */
+    .hover-lift { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.4); }
 
-    .scrollbar-hidden::-webkit-scrollbar { display: none; }
-    .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+    .hover-scale { transition: transform 0.2s ease; }
+    .hover-scale:hover { transform: scale(1.02); }
 
-    .text-gradient { background: linear-gradient(135deg, #0ea5e9, #10b981, #0ea5e9); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: gradient-shift 4s ease infinite; }
+    .hover-glow { transition: box-shadow 0.3s ease; }
+    .hover-glow:hover { box-shadow: 0 0 30px rgba(249, 115, 22, 0.3); }
 
-    .border-gradient { border: 2px solid transparent; background: linear-gradient(white, white) padding-box, linear-gradient(135deg, #0ea5e9, #10b981) border-box; }
+    /* Glass effect */
+    .glass { background: rgba(16, 42, 67, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    .glass-light { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
 
-    .hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
-    .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15); }
+    /* Scrollbar */
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-    .stagger-1 { animation-delay: 0.05s; }
-    .stagger-2 { animation-delay: 0.1s; }
-    .stagger-3 { animation-delay: 0.15s; }
-    .stagger-4 { animation-delay: 0.2s; }
-    .stagger-5 { animation-delay: 0.25s; }
+    /* Gradient text */
+    .text-gradient { background: linear-gradient(135deg, #f97316, #fb923c); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+    /* Button press effect */
+    .btn-press:active { transform: scale(0.98); }
+
+    /* Focus ring */
+    .focus-ring:focus { outline: none; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3); }
+
+    /* Decorative dot pattern */
+    .dot-pattern {
+      background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
   </style>
 </head>
-<body class="min-h-screen bg-ink-950 flex items-center justify-center p-4 md:p-8">
-  <!-- Ambient background -->
-  <div class="fixed inset-0 mesh-bg opacity-50"></div>
-  <div class="fixed inset-0 noise-overlay"></div>
+<body class="min-h-screen bg-navy-950 flex items-center justify-center p-4 md:p-8">
+  <!-- Background effects -->
+  <div class="fixed inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-950"></div>
+  <div class="fixed inset-0 dot-pattern opacity-30"></div>
+  <div class="fixed top-0 right-0 w-[600px] h-[600px] bg-fire-500/10 rounded-full blur-[120px]"></div>
+  <div class="fixed bottom-0 left-0 w-[400px] h-[400px] bg-info-500/10 rounded-full blur-[100px]"></div>
 
   <div id="root" class="relative z-10"></div>
 
   <script type="text/babel">
-    const { useState, useEffect, useCallback, useMemo } = React;
+    const { useState, useEffect, useCallback, useMemo, useRef } = React;
+
+    // SVG Icons as components
+    const Icons = {
+      Home: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>,
+      Projects: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>,
+      Users: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+      Payments: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>,
+      Shield: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
+      Settings: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+      Plus: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>,
+      Check: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>,
+      Clock: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+      Zap: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
+      ArrowRight: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>,
+      ArrowUp: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>,
+      Search: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
+      Bell: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>,
+      X: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>,
+      Dollar: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+      TrendingUp: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
+      Lock: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>,
+      Document: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
+      Upload: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>,
+      Download: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>,
+      Filter: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>,
+      MoreHorizontal: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>,
+      ExternalLink: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>,
+      Refresh: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>,
+      ChevronRight: () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>,
+      Building: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>,
+      Invoices: () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z" /></svg>,
+    };
 
     // Data
     const initialProjects = [
       { id: 1, name: 'Website Redesign', client: 'Acme Corp', vertical: 'software', budget: 15000, funded: 15000, spent: 8200, status: 'active', milestones: [
-        { id: 'm1', name: 'Discovery', amount: 3000, status: 'completed', contractor: 1 },
-        { id: 'm2', name: 'Design', amount: 4000, status: 'completed', contractor: 1 },
-        { id: 'm3', name: 'Development', amount: 5000, status: 'in_progress', contractor: 2 },
-        { id: 'm4', name: 'Launch', amount: 3000, status: 'pending', contractor: 2 },
+        { id: 'm1', name: 'Discovery & Research', amount: 3000, status: 'completed', contractor: 1 },
+        { id: 'm2', name: 'UI/UX Design', amount: 4000, status: 'completed', contractor: 1 },
+        { id: 'm3', name: 'Frontend Development', amount: 5000, status: 'in_progress', contractor: 2 },
+        { id: 'm4', name: 'Launch & QA', amount: 3000, status: 'pending', contractor: 2 },
       ]},
-      { id: 2, name: 'Q1 Campaign', client: 'StyleBrand', vertical: 'ecommerce', budget: 25000, funded: 25000, spent: 12400, status: 'active', milestones: [
-        { id: 'm5', name: 'Brief', amount: 2000, status: 'completed', contractor: 3 },
-        { id: 'm6', name: 'Content', amount: 15000, status: 'in_progress', contractor: 4 },
-        { id: 'm7', name: 'Launch', amount: 8000, status: 'pending', contractor: 3 },
+      { id: 2, name: 'Q1 Marketing Campaign', client: 'StyleBrand', vertical: 'ecommerce', budget: 25000, funded: 25000, spent: 12400, status: 'active', milestones: [
+        { id: 'm5', name: 'Strategy Brief', amount: 2000, status: 'completed', contractor: 3 },
+        { id: 'm6', name: 'Content Production', amount: 15000, status: 'in_progress', contractor: 4 },
+        { id: 'm7', name: 'Campaign Launch', amount: 8000, status: 'pending', contractor: 3 },
       ]},
-      { id: 3, name: 'Kitchen Reno', client: '123 Oak St', vertical: 'construction', budget: 45000, funded: 30000, spent: 22000, status: 'active', milestones: [
-        { id: 'm8', name: 'Demo', amount: 8000, status: 'completed', contractor: 5 },
-        { id: 'm9', name: 'Plumbing', amount: 6000, status: 'completed', contractor: 6 },
-        { id: 'm10', name: 'Cabinets', amount: 15000, status: 'in_progress', contractor: 5 },
-        { id: 'm11', name: 'Finish', amount: 16000, status: 'pending', contractor: 5 },
+      { id: 3, name: 'Kitchen Renovation', client: '123 Oak Street', vertical: 'construction', budget: 45000, funded: 30000, spent: 22000, status: 'active', milestones: [
+        { id: 'm8', name: 'Demolition', amount: 8000, status: 'completed', contractor: 5 },
+        { id: 'm9', name: 'Plumbing & Electric', amount: 6000, status: 'completed', contractor: 6 },
+        { id: 'm10', name: 'Cabinet Install', amount: 15000, status: 'in_progress', contractor: 5 },
+        { id: 'm11', name: 'Finishing', amount: 16000, status: 'pending', contractor: 5 },
       ]},
     ];
 
     const initialContractors = [
-      { id: 1, name: 'Sarah Mitchell', email: 'sarah@design.co', company: 'Mitchell Design', w9: 'collected', tin: 'verified', paid: 7000, color: 'from-electric-400 to-electric-600' },
-      { id: 2, name: 'DevStudio LLC', email: 'dev@studio.io', company: 'DevStudio', w9: 'collected', tin: 'verified', paid: 1200, color: 'from-mint-400 to-mint-600' },
-      { id: 3, name: 'Maria Garcia', email: 'maria@creative.co', company: 'Garcia Creative', w9: 'collected', tin: 'verified', paid: 4400, color: 'from-coral-400 to-coral-600' },
-      { id: 4, name: 'James Chen', email: 'james@content.co', company: 'Chen Media', w9: 'collected', tin: 'pending', paid: 8000, color: 'from-gold-400 to-gold-600' },
-      { id: 5, name: 'BuildRight Inc', email: 'ap@buildright.com', company: 'BuildRight', w9: 'collected', tin: 'verified', paid: 19000, color: 'from-electric-400 to-mint-500' },
-      { id: 6, name: 'Mike Plumbing', email: 'mike@plumb.com', company: "Mike's Plumbing", w9: 'collected', tin: 'verified', paid: 6000, color: 'from-mint-400 to-electric-500' },
+      { id: 1, name: 'Sarah Mitchell', email: 'sarah@mitchelldesign.co', company: 'Mitchell Design Studio', w9: 'collected', tin: 'verified', paid: 7000, avatar: 'SM' },
+      { id: 2, name: 'DevStudio LLC', email: 'hello@devstudio.io', company: 'DevStudio', w9: 'collected', tin: 'verified', paid: 1200, avatar: 'DS' },
+      { id: 3, name: 'Maria Garcia', email: 'maria@garciacreative.com', company: 'Garcia Creative', w9: 'collected', tin: 'verified', paid: 4400, avatar: 'MG' },
+      { id: 4, name: 'James Chen', email: 'james@chenmedia.co', company: 'Chen Media Group', w9: 'collected', tin: 'pending', paid: 8000, avatar: 'JC' },
+      { id: 5, name: 'BuildRight Inc', email: 'accounts@buildright.com', company: 'BuildRight Construction', w9: 'collected', tin: 'verified', paid: 19000, avatar: 'BR' },
+      { id: 6, name: 'Mike Peterson', email: 'mike@petersonplumbing.com', company: "Peterson Plumbing", w9: 'collected', tin: 'verified', paid: 6000, avatar: 'MP' },
     ];
 
     const initialPayments = [
-      { id: 1, contractor: 1, amount: 4000, desc: 'UI Design', speed: 'instant', status: 'completed', date: 'Jan 15' },
-      { id: 2, contractor: 5, amount: 8000, desc: 'Demo & Prep', speed: 'standard', status: 'completed', date: 'Jan 12' },
-      { id: 3, contractor: 6, amount: 6000, desc: 'Plumbing', speed: 'instant', status: 'completed', date: 'Jan 10' },
-      { id: 4, contractor: 3, amount: 2400, desc: 'Content Brief', speed: 'express', status: 'processing', date: 'Jan 18' },
-      { id: 5, contractor: 2, amount: 2500, desc: 'Frontend Dev', speed: 'standard', status: 'scheduled', date: 'Jan 25' },
+      { id: 1, contractor: 1, amount: 4000, desc: 'UI/UX Design - Phase 2', speed: 'instant', status: 'completed', date: 'Today', time: '2:34 PM' },
+      { id: 2, contractor: 5, amount: 8000, desc: 'Demolition Complete', speed: 'standard', status: 'completed', date: 'Jan 15', time: '11:20 AM' },
+      { id: 3, contractor: 6, amount: 6000, desc: 'Plumbing Milestone', speed: 'instant', status: 'completed', date: 'Jan 12', time: '4:15 PM' },
+      { id: 4, contractor: 3, amount: 2400, desc: 'Strategy Brief', speed: 'express', status: 'processing', date: 'Jan 18', time: '9:00 AM' },
+      { id: 5, contractor: 2, amount: 2500, desc: 'Frontend Sprint 1', speed: 'standard', status: 'scheduled', date: 'Jan 25', time: '10:00 AM' },
     ];
 
     const verticals = {
-      software: { icon: '◈', name: 'Software', gradient: 'from-electric-400 to-electric-600' },
-      ecommerce: { icon: '◉', name: 'E-Commerce', gradient: 'from-coral-400 to-coral-600' },
-      construction: { icon: '▣', name: 'Construction', gradient: 'from-gold-400 to-gold-600' },
-      creative: { icon: '◐', name: 'Creative', gradient: 'from-mint-400 to-mint-600' },
+      software: { icon: '{ }', name: 'Software', color: 'from-info-500 to-info-600' },
+      ecommerce: { icon: '🛒', name: 'E-Commerce', color: 'from-fire-500 to-fire-600' },
+      construction: { icon: '🏗️', name: 'Construction', color: 'from-warning-500 to-warning-600' },
+      creative: { icon: '🎨', name: 'Creative', color: 'from-purple-500 to-purple-600' },
     };
 
     // Components
-    const Modal = ({ open, onClose, title, children }) => {
+    const Modal = ({ open, onClose, title, children, size = 'md' }) => {
+      useEffect(() => {
+        if (open) document.body.style.overflow = 'hidden';
+        else document.body.style.overflow = '';
+        return () => { document.body.style.overflow = ''; };
+      }, [open]);
+
       if (!open) return null;
+      const sizeClasses = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl' };
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-ink-950/80 backdrop-blur-sm" onClick={onClose} />
-          <div className="relative glass rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-slide-up border border-ink-200/50">
-            <div className="px-8 py-6 border-b border-ink-200/50">
-              <h2 className="font-display text-2xl text-ink-900">{title}</h2>
+          <div className="absolute inset-0 bg-navy-950/90 backdrop-blur-sm animate-fadeIn" onClick={onClose} />
+          <div className={`relative glass rounded-2xl shadow-2xl w-full ${sizeClasses[size]} overflow-hidden animate-scaleIn border border-white/10`}>
+            <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-white">{title}</h2>
+              <button onClick={onClose} className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center text-navy-300 hover:text-white transition-colors">
+                <Icons.X />
+              </button>
             </div>
-            <div className="p-8">{children}</div>
+            <div className="p-6">{children}</div>
           </div>
         </div>
       );
     };
 
-    const Toast = ({ msg, onClose }) => {
+    const Toast = ({ msg, type = 'success', onClose }) => {
       useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, [onClose]);
+      const colors = {
+        success: 'from-success-500 to-success-600',
+        error: 'from-red-500 to-red-600',
+        info: 'from-info-500 to-info-600',
+      };
       return (
-        <div className="glass-dark text-white rounded-2xl px-6 py-4 flex items-center gap-4 animate-slide-up border border-ink-700/50">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-mint-400 to-mint-600 flex items-center justify-center text-white font-bold">✓</div>
-          <span className="font-medium">{msg}</span>
+        <div className="glass rounded-xl px-5 py-4 flex items-center gap-4 animate-slideInRight border border-white/10 shadow-xl">
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${colors[type]} flex items-center justify-center text-white`}>
+            <Icons.Check />
+          </div>
+          <span className="font-medium text-white">{msg}</span>
         </div>
       );
     };
+
+    const Avatar = ({ name, size = 'md', className = '' }) => {
+      const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2);
+      const sizes = { sm: 'w-8 h-8 text-xs', md: 'w-10 h-10 text-sm', lg: 'w-12 h-12 text-base' };
+      return (
+        <div className={`${sizes[size]} rounded-xl bg-gradient-to-br from-fire-500 to-fire-600 flex items-center justify-center text-white font-semibold ${className}`}>
+          {initials}
+        </div>
+      );
+    };
+
+    const Badge = ({ children, variant = 'default', size = 'sm' }) => {
+      const variants = {
+        default: 'bg-white/10 text-navy-200',
+        success: 'bg-success-500/20 text-success-400',
+        warning: 'bg-warning-500/20 text-warning-400',
+        fire: 'bg-fire-500/20 text-fire-400',
+        info: 'bg-info-500/20 text-info-400',
+      };
+      const sizes = { sm: 'px-2.5 py-1 text-xs', md: 'px-3 py-1.5 text-sm' };
+      return <span className={`inline-flex items-center gap-1.5 rounded-lg font-medium ${variants[variant]} ${sizes[size]}`}>{children}</span>;
+    };
+
+    const Button = ({ children, variant = 'primary', size = 'md', icon: Icon, onClick, disabled, className = '', ...props }) => {
+      const variants = {
+        primary: 'bg-gradient-to-r from-fire-500 to-fire-600 text-white hover:from-fire-600 hover:to-fire-700 shadow-lg shadow-fire-500/25 hover:shadow-fire-500/40',
+        secondary: 'bg-white/10 text-white hover:bg-white/20 border border-white/10',
+        ghost: 'text-navy-300 hover:text-white hover:bg-white/10',
+        danger: 'bg-red-500/20 text-red-400 hover:bg-red-500/30',
+      };
+      const sizes = {
+        sm: 'px-3 py-2 text-sm',
+        md: 'px-4 py-2.5 text-sm',
+        lg: 'px-6 py-3 text-base',
+      };
+      return (
+        <button
+          onClick={onClick}
+          disabled={disabled}
+          className={`inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 btn-press focus-ring disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
+          {...props}
+        >
+          {Icon && <Icon />}
+          {children}
+        </button>
+      );
+    };
+
+    const StatCard = ({ label, value, sub, icon: Icon, trend, delay }) => (
+      <div className={`glass rounded-2xl p-6 hover-lift border border-white/10 animate-slideUp ${delay}`}>
+        <div className="flex items-start justify-between mb-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fire-500/20 to-fire-600/20 flex items-center justify-center text-fire-400">
+            <Icon />
+          </div>
+          {trend && (
+            <div className="flex items-center gap-1 text-success-400 text-sm font-medium">
+              <Icons.TrendingUp />
+              <span>{trend}</span>
+            </div>
+          )}
+        </div>
+        <div className="font-mono text-3xl font-bold text-white mb-1">{value}</div>
+        <div className="text-sm text-navy-300">{label}</div>
+        {sub && <div className="text-xs text-navy-400 mt-1">{sub}</div>}
+      </div>
+    );
 
     // Main App
     const PayoutDashboard = () => {
@@ -171,11 +306,19 @@
       const [toasts, setToasts] = useState([]);
       const [payModal, setPayModal] = useState(false);
       const [approveModal, setApproveModal] = useState(null);
+      const [detailModal, setDetailModal] = useState(null);
+      const [searchQuery, setSearchQuery] = useState('');
       const [payForm, setPayForm] = useState({ contractor: '', amount: '', desc: '', speed: 'standard' });
+      const [notifications, setNotifications] = useState([
+        { id: 1, msg: 'Sarah Mitchell submitted invoice #1042', time: '5m ago' },
+        { id: 2, msg: 'W-9 received from James Chen', time: '1h ago' },
+        { id: 3, msg: 'Payment to BuildRight completed', time: '2h ago' },
+      ]);
+      const [showNotifications, setShowNotifications] = useState(false);
 
-      const addToast = useCallback((msg) => {
+      const addToast = useCallback((msg, type = 'success') => {
         const id = Date.now();
-        setToasts(prev => [...prev, { id, msg }]);
+        setToasts(prev => [...prev, { id, msg, type }]);
       }, []);
 
       const stats = useMemo(() => ({
@@ -183,21 +326,32 @@
         escrow: projects.reduce((s, p) => s + (p.funded - p.spent), 0),
         pending: projects.flatMap(p => p.milestones).filter(m => m.status === 'in_progress').length,
         w9: contractors.filter(c => c.w9 === 'collected').length,
+        contractors: contractors.length,
       }), [payments, projects, contractors]);
 
       const handlePay = (e) => {
         e.preventDefault();
         const c = contractors.find(x => x.id === parseInt(payForm.contractor));
         const amt = parseFloat(payForm.amount);
-        setPayments(prev => [{ id: Date.now(), contractor: c.id, amount: amt, desc: payForm.desc || 'Payment', speed: payForm.speed, status: payForm.speed === 'instant' ? 'processing' : 'scheduled', date: 'Today' }, ...prev]);
+        const newPayment = {
+          id: Date.now(),
+          contractor: c.id,
+          amount: amt,
+          desc: payForm.desc || 'Payment',
+          speed: payForm.speed,
+          status: payForm.speed === 'instant' ? 'processing' : 'scheduled',
+          date: 'Today',
+          time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+        };
+        setPayments(prev => [newPayment, ...prev]);
         setPayModal(false);
         setPayForm({ contractor: '', amount: '', desc: '', speed: 'standard' });
-        addToast(`$${amt.toLocaleString()} initiated to ${c.name}`);
+        addToast(`$${amt.toLocaleString()} payment initiated to ${c.name}`);
         if (payForm.speed === 'instant') {
           setTimeout(() => {
-            setPayments(prev => prev.map(p => p.id === prev[0].id ? { ...p, status: 'completed' } : p));
-            addToast(`$${amt.toLocaleString()} sent instantly!`);
-          }, 2000);
+            setPayments(prev => prev.map(p => p.id === newPayment.id ? { ...p, status: 'completed' } : p));
+            addToast(`Instant payment to ${c.name} completed!`);
+          }, 2500);
         }
       };
 
@@ -208,74 +362,79 @@
           ...p, spent: p.spent + milestone.amount,
           milestones: p.milestones.map(m => m.id === milestone.id ? { ...m, status: 'completed' } : m)
         } : p));
-        setPayments(prev => [{ id: Date.now(), contractor: milestone.contractor, amount: milestone.amount, desc: milestone.name, speed, status: speed === 'instant' ? 'processing' : 'scheduled', date: 'Today' }, ...prev]);
+        const newPayment = {
+          id: Date.now(),
+          contractor: milestone.contractor,
+          amount: milestone.amount,
+          desc: `${project.name} - ${milestone.name}`,
+          speed,
+          status: speed === 'instant' ? 'processing' : 'scheduled',
+          date: 'Today',
+          time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+        };
+        setPayments(prev => [newPayment, ...prev]);
         setApproveModal(null);
-        addToast(`${milestone.name} approved — $${milestone.amount.toLocaleString()} to ${c?.name}`);
+        addToast(`${milestone.name} approved - $${milestone.amount.toLocaleString()} to ${c?.name}`);
         if (speed === 'instant') {
           setTimeout(() => {
-            setPayments(prev => prev.map((p, i) => i === 0 ? { ...p, status: 'completed' } : p));
+            setPayments(prev => prev.map(p => p.id === newPayment.id ? { ...p, status: 'completed' } : p));
             addToast(`Instant payout complete!`);
-          }, 2000);
+          }, 2500);
         }
       };
 
       const navItems = [
-        { id: 'dashboard', icon: '⌂', label: 'Home' },
-        { id: 'projects', icon: '◧', label: 'Projects' },
-        { id: 'contractors', icon: '◎', label: 'Contractors' },
-        { id: 'payments', icon: '◈', label: 'Payments' },
-        { id: 'compliance', icon: '◉', label: 'Compliance' },
+        { id: 'dashboard', icon: Icons.Home, label: 'Dashboard' },
+        { id: 'projects', icon: Icons.Projects, label: 'Projects' },
+        { id: 'contractors', icon: Icons.Users, label: 'Contractors' },
+        { id: 'payments', icon: Icons.Payments, label: 'Payments' },
+        { id: 'invoices', icon: Icons.Invoices, label: 'Invoices' },
+        { id: 'compliance', icon: Icons.Shield, label: 'Compliance' },
+        { id: 'settings', icon: Icons.Settings, label: 'Settings' },
       ];
 
+      // Dashboard View
       const DashboardView = () => (
         <div className="space-y-8">
-          {/* Hero Stats */}
-          <div className="grid grid-cols-4 gap-4">
-            {[
-              { label: 'Paid This Month', value: `$${stats.paid.toLocaleString()}`, sub: '+12% from last month', gradient: 'from-electric-400 to-electric-600', delay: 'stagger-1' },
-              { label: 'In Escrow', value: `$${stats.escrow.toLocaleString()}`, sub: 'Protected funds', gradient: 'from-mint-400 to-mint-600', delay: 'stagger-2' },
-              { label: 'Pending Approval', value: stats.pending, sub: 'Milestones ready', gradient: 'from-gold-400 to-gold-600', delay: 'stagger-3' },
-              { label: '1099 Ready', value: `${stats.w9}/${contractors.length}`, sub: 'W-9s collected', gradient: 'from-coral-400 to-coral-600', delay: 'stagger-4' },
-            ].map((stat, i) => (
-              <div key={i} className={`glass rounded-2xl p-6 hover-lift border border-ink-200/50 animate-slide-up opacity-0 ${stat.delay}`}>
-                <div className="flex items-start justify-between mb-4">
-                  <span className="text-xs font-semibold text-ink-500 uppercase tracking-wider">{stat.label}</span>
-                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.gradient} opacity-20`} />
-                </div>
-                <div className="font-display text-4xl text-ink-900 mb-1">{stat.value}</div>
-                <div className="text-sm text-ink-500">{stat.sub}</div>
-              </div>
-            ))}
+          {/* Stats Grid */}
+          <div className="grid grid-cols-4 gap-5">
+            <StatCard icon={Icons.Dollar} label="Paid This Month" value={`$${stats.paid.toLocaleString()}`} trend="+12%" delay="delay-1" />
+            <StatCard icon={Icons.Lock} label="In Escrow" value={`$${stats.escrow.toLocaleString()}`} sub="Protected funds" delay="delay-2" />
+            <StatCard icon={Icons.Clock} label="Pending Approval" value={stats.pending} sub="Milestones ready" delay="delay-3" />
+            <StatCard icon={Icons.Shield} label="1099 Ready" value={`${stats.w9}/${stats.contractors}`} sub="W-9s collected" delay="delay-4" />
           </div>
 
-          {/* Projects + Payments Grid */}
+          {/* Main Grid */}
           <div className="grid grid-cols-5 gap-6">
             {/* Active Projects */}
-            <div className="col-span-3 glass rounded-2xl border border-ink-200/50 overflow-hidden animate-slide-up opacity-0 stagger-2">
-              <div className="px-6 py-5 border-b border-ink-200/50 flex items-center justify-between">
-                <h3 className="font-display text-xl text-ink-900">Active Projects</h3>
-                <span className="text-xs font-mono text-ink-400">{projects.length} total</span>
+            <div className="col-span-3 glass rounded-2xl border border-white/10 overflow-hidden animate-slideUp delay-2">
+              <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Active Projects</h3>
+                <Button variant="ghost" size="sm" icon={Icons.Plus} onClick={() => setView('projects')}>New Project</Button>
               </div>
-              <div className="divide-y divide-ink-100">
-                {projects.map((project, i) => (
-                  <div key={project.id} className="px-6 py-5 hover:bg-ink-50/50 cursor-pointer transition-colors group">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${verticals[project.vertical].gradient} flex items-center justify-center text-white text-lg font-display`}>
+              <div className="divide-y divide-white/5">
+                {projects.map((project) => (
+                  <div key={project.id} className="px-6 py-5 hover:bg-white/5 cursor-pointer transition-colors group" onClick={() => setDetailModal({ type: 'project', data: project })}>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${verticals[project.vertical].color} flex items-center justify-center text-white text-lg`}>
                           {verticals[project.vertical].icon}
                         </div>
                         <div>
-                          <div className="font-semibold text-ink-900 group-hover:text-electric-600 transition-colors">{project.name}</div>
-                          <div className="text-sm text-ink-500">{project.client}</div>
+                          <div className="font-semibold text-white group-hover:text-fire-400 transition-colors flex items-center gap-2">
+                            {project.name}
+                            <Icons.ChevronRight />
+                          </div>
+                          <div className="text-sm text-navy-400">{project.client}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-mono text-lg text-ink-900">${project.spent.toLocaleString()}</div>
-                        <div className="text-xs text-ink-400">of ${project.budget.toLocaleString()}</div>
+                        <div className="font-mono text-lg text-white">${project.spent.toLocaleString()}</div>
+                        <div className="text-xs text-navy-400">of ${project.budget.toLocaleString()}</div>
                       </div>
                     </div>
-                    <div className="h-2 bg-ink-100 rounded-full overflow-hidden">
-                      <div className={`h-full bg-gradient-to-r ${verticals[project.vertical].gradient} rounded-full transition-all duration-1000`} style={{ width: `${(project.spent / project.budget) * 100}%` }} />
+                    <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div className={`absolute inset-y-0 left-0 bg-gradient-to-r ${verticals[project.vertical].color} rounded-full transition-all duration-1000`} style={{ width: `${(project.spent / project.budget) * 100}%` }} />
                     </div>
                   </div>
                 ))}
@@ -283,29 +442,28 @@
             </div>
 
             {/* Recent Payments */}
-            <div className="col-span-2 glass rounded-2xl border border-ink-200/50 overflow-hidden animate-slide-up opacity-0 stagger-3">
-              <div className="px-6 py-5 border-b border-ink-200/50">
-                <h3 className="font-display text-xl text-ink-900">Recent Payments</h3>
+            <div className="col-span-2 glass rounded-2xl border border-white/10 overflow-hidden animate-slideUp delay-3">
+              <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Recent Payments</h3>
+                <Button variant="ghost" size="sm" onClick={() => setView('payments')}>View All</Button>
               </div>
-              <div className="divide-y divide-ink-100">
+              <div className="divide-y divide-white/5">
                 {payments.slice(0, 5).map(payment => {
                   const c = contractors.find(x => x.id === payment.contractor);
                   return (
-                    <div key={payment.id} className="px-6 py-4 flex items-center justify-between hover:bg-ink-50/50 transition-colors">
+                    <div key={payment.id} className="px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer" onClick={() => setDetailModal({ type: 'payment', data: { ...payment, contractor: c } })}>
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${c?.color} flex items-center justify-center text-white text-xs font-bold`}>
-                          {c?.name.split(' ').map(n => n[0]).join('')}
-                        </div>
+                        <Avatar name={c?.name || 'NA'} size="sm" />
                         <div>
-                          <div className="font-medium text-ink-900 text-sm">{c?.name}</div>
-                          <div className="text-xs text-ink-400">{payment.desc}</div>
+                          <div className="font-medium text-white text-sm">{c?.name}</div>
+                          <div className="text-xs text-navy-400">{payment.desc}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-mono font-semibold text-ink-900">${payment.amount.toLocaleString()}</div>
-                        <div className={`text-xs font-medium ${payment.status === 'completed' ? 'text-mint-600' : payment.status === 'processing' ? 'text-gold-600' : 'text-ink-400'}`}>
-                          {payment.status === 'completed' ? '✓ Paid' : payment.status === 'processing' ? '● Processing' : '○ Scheduled'}
-                        </div>
+                        <div className="font-mono font-semibold text-white">${payment.amount.toLocaleString()}</div>
+                        <Badge variant={payment.status === 'completed' ? 'success' : payment.status === 'processing' ? 'warning' : 'default'}>
+                          {payment.status === 'completed' ? '✓ Paid' : payment.status === 'processing' ? 'Processing' : 'Scheduled'}
+                        </Badge>
                       </div>
                     </div>
                   );
@@ -315,162 +473,208 @@
           </div>
 
           {/* Milestones Awaiting */}
-          <div className="glass rounded-2xl border border-ink-200/50 overflow-hidden animate-slide-up opacity-0 stagger-4">
-            <div className="px-6 py-5 border-b border-ink-200/50">
-              <h3 className="font-display text-xl text-ink-900">Milestones Awaiting Approval</h3>
+          <div className="glass rounded-2xl border border-white/10 overflow-hidden animate-slideUp delay-4">
+            <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white">Milestones Awaiting Approval</h3>
+              <Badge variant="fire">{stats.pending} pending</Badge>
             </div>
-            <div className="divide-y divide-ink-100">
+            <div className="divide-y divide-white/5">
               {projects.flatMap(p => p.milestones.filter(m => m.status === 'in_progress').map(m => ({ ...m, project: p }))).map(milestone => {
                 const c = contractors.find(x => x.id === milestone.contractor);
                 return (
-                  <div key={milestone.id} className="px-6 py-5 flex items-center justify-between hover:bg-ink-50/50 transition-colors">
+                  <div key={milestone.id} className="px-6 py-5 flex items-center justify-between hover:bg-white/5 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${c?.color} flex items-center justify-center text-white font-bold`}>
-                        {c?.name.split(' ').map(n => n[0]).join('')}
-                      </div>
+                      <Avatar name={c?.name || 'NA'} size="lg" />
                       <div>
-                        <div className="font-semibold text-ink-900">{milestone.name}</div>
-                        <div className="text-sm text-ink-500">{milestone.project.name} · {c?.name}</div>
+                        <div className="font-semibold text-white">{milestone.name}</div>
+                        <div className="text-sm text-navy-400">{milestone.project.name} · {c?.name}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-6">
-                      <div className="font-display text-2xl text-ink-900">${milestone.amount.toLocaleString()}</div>
-                      <button onClick={() => setApproveModal({ project: milestone.project, milestone })} className="px-6 py-3 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-electric-500/25 transition-all hover:-translate-y-0.5">
+                      <div className="text-right">
+                        <div className="font-mono text-2xl text-white">${milestone.amount.toLocaleString()}</div>
+                        <div className="text-xs text-navy-400">From escrow</div>
+                      </div>
+                      <Button onClick={() => setApproveModal({ project: milestone.project, milestone })} icon={Icons.Check}>
                         Approve & Pay
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 );
               })}
+              {stats.pending === 0 && (
+                <div className="px-6 py-12 text-center text-navy-400">
+                  <Icons.Check className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>All milestones approved!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       );
 
+      // Contractors View
       const ContractorsView = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-3 gap-4">
-            {contractors.map((c, i) => (
-              <div key={c.id} className={`glass rounded-2xl p-6 hover-lift border border-ink-200/50 animate-slide-up opacity-0 stagger-${i + 1}`}>
-                <div className="flex items-start gap-4 mb-4">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${c.color} flex items-center justify-center text-white text-lg font-bold`}>
-                    {c.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-ink-900">{c.name}</div>
-                    <div className="text-sm text-ink-500">{c.company}</div>
-                    <div className="text-xs text-ink-400 font-mono mt-1">{c.email}</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-4 border-t border-ink-100">
-                  <div className="flex gap-2">
-                    <span className={`px-2 py-1 rounded-lg text-xs font-medium ${c.w9 === 'collected' ? 'bg-mint-100 text-mint-700' : 'bg-gold-100 text-gold-700'}`}>W-9 {c.w9 === 'collected' ? '✓' : '●'}</span>
-                    <span className={`px-2 py-1 rounded-lg text-xs font-medium ${c.tin === 'verified' ? 'bg-electric-100 text-electric-700' : 'bg-gold-100 text-gold-700'}`}>TIN {c.tin === 'verified' ? '✓' : '●'}</span>
-                  </div>
-                  <div className="font-mono font-semibold text-ink-900">${c.paid.toLocaleString()}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-
-      const PaymentsView = () => (
-        <div className="glass rounded-2xl border border-ink-200/50 overflow-hidden animate-fade-in">
-          <div className="px-6 py-5 border-b border-ink-200/50 flex items-center justify-between">
-            <h3 className="font-display text-xl text-ink-900">All Payments</h3>
-            <button onClick={() => setPayModal(true)} className="px-5 py-2.5 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-electric-500/25 transition-all text-sm">
-              + New Payment
-            </button>
-          </div>
-          <table className="w-full">
-            <thead className="bg-ink-50/50 border-b border-ink-100">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-ink-500 uppercase tracking-wider">Contractor</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-ink-500 uppercase tracking-wider">Description</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-ink-500 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase tracking-wider">Speed</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-ink-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-ink-100">
-              {payments.map(payment => {
-                const c = contractors.find(x => x.id === payment.contractor);
-                return (
-                  <tr key={payment.id} className="hover:bg-ink-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${c?.color} flex items-center justify-center text-white text-xs font-bold`}>{c?.name.split(' ').map(n => n[0]).join('')}</div>
-                        <span className="font-medium text-ink-900">{c?.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-ink-600">{payment.desc}</td>
-                    <td className="px-6 py-4 text-right font-mono font-semibold text-ink-900">${payment.amount.toLocaleString()}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${payment.speed === 'instant' ? 'bg-electric-100 text-electric-700' : payment.speed === 'express' ? 'bg-gold-100 text-gold-700' : 'bg-ink-100 text-ink-600'}`}>
-                        {payment.speed === 'instant' ? '⚡ Instant' : payment.speed === 'express' ? '→ Express' : '○ Standard'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`font-medium ${payment.status === 'completed' ? 'text-mint-600' : payment.status === 'processing' ? 'text-gold-600' : 'text-ink-400'}`}>
-                        {payment.status === 'completed' ? '✓ Paid' : payment.status === 'processing' ? '● Processing' : '○ Scheduled'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right text-ink-500 font-mono text-sm">{payment.date}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      );
-
-      const ComplianceView = () => (
-        <div className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { label: 'W-9s Collected', value: `${stats.w9}/${contractors.length}`, gradient: 'from-mint-400 to-mint-600' },
-              { label: 'TINs Verified', value: `${contractors.filter(c => c.tin === 'verified').length}/${contractors.length}`, gradient: 'from-electric-400 to-electric-600' },
-              { label: '1099s to File', value: contractors.filter(c => c.paid >= 600).length, gradient: 'from-coral-400 to-coral-600' },
-            ].map((stat, i) => (
-              <div key={i} className={`glass rounded-2xl p-6 border border-ink-200/50 animate-slide-up opacity-0 stagger-${i + 1}`}>
-                <div className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-2">{stat.label}</div>
-                <div className="font-display text-4xl text-ink-900">{stat.value}</div>
-              </div>
-            ))}
-          </div>
-          <div className="glass rounded-2xl border border-ink-200/50 overflow-hidden">
-            <div className="px-6 py-5 border-b border-ink-200/50 flex items-center justify-between">
-              <h3 className="font-display text-xl text-ink-900">1099 Preparation</h3>
-              <button className="px-5 py-2.5 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl text-sm">Generate 1099s</button>
+        <div className="space-y-6 animate-fadeIn">
+          <div className="flex items-center justify-between">
+            <div className="relative">
+              <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search contractors..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-navy-400 focus:outline-none focus:border-fire-500 w-80"
+              />
             </div>
+            <Button icon={Icons.Plus}>Add Contractor</Button>
+          </div>
+          <div className="grid grid-cols-3 gap-5">
+            {contractors.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.company.toLowerCase().includes(searchQuery.toLowerCase())).map((c, i) => (
+              <div key={c.id} className={`glass rounded-2xl p-6 hover-lift border border-white/10 animate-slideUp delay-${Math.min(i + 1, 6)} cursor-pointer`} onClick={() => setDetailModal({ type: 'contractor', data: c })}>
+                <div className="flex items-start gap-4 mb-5">
+                  <Avatar name={c.name} size="lg" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-white truncate">{c.name}</div>
+                    <div className="text-sm text-navy-300 truncate">{c.company}</div>
+                    <div className="text-xs text-navy-400 font-mono mt-1 truncate">{c.email}</div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                  <div className="flex gap-2">
+                    <Badge variant={c.w9 === 'collected' ? 'success' : 'warning'}>W-9 {c.w9 === 'collected' ? '✓' : '○'}</Badge>
+                    <Badge variant={c.tin === 'verified' ? 'success' : 'warning'}>TIN {c.tin === 'verified' ? '✓' : '○'}</Badge>
+                  </div>
+                  <div className="font-mono font-semibold text-white">${c.paid.toLocaleString()}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+      // Payments View
+      const PaymentsView = () => (
+        <div className="glass rounded-2xl border border-white/10 overflow-hidden animate-fadeIn">
+          <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h3 className="text-lg font-semibold text-white">All Payments</h3>
+              <Badge>{payments.length} total</Badge>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="secondary" icon={Icons.Filter} size="sm">Filter</Button>
+              <Button variant="secondary" icon={Icons.Download} size="sm">Export</Button>
+              <Button onClick={() => setPayModal(true)} icon={Icons.Plus}>New Payment</Button>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-ink-50/50 border-b border-ink-100">
+              <thead className="bg-white/5 border-b border-white/10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-ink-500 uppercase">Contractor</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-ink-500 uppercase">YTD Paid</th>
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase">W-9</th>
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase">TIN</th>
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-ink-500 uppercase">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-navy-300 uppercase tracking-wider">Contractor</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-navy-300 uppercase tracking-wider">Description</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-navy-300 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-navy-300 uppercase tracking-wider">Speed</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-navy-300 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-navy-300 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-navy-300 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-ink-100">
+              <tbody className="divide-y divide-white/5">
+                {payments.map(payment => {
+                  const c = contractors.find(x => x.id === payment.contractor);
+                  return (
+                    <tr key={payment.id} className="hover:bg-white/5 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar name={c?.name || 'NA'} size="sm" />
+                          <span className="font-medium text-white">{c?.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-navy-300">{payment.desc}</td>
+                      <td className="px-6 py-4 text-right font-mono font-semibold text-white">${payment.amount.toLocaleString()}</td>
+                      <td className="px-6 py-4 text-center">
+                        <Badge variant={payment.speed === 'instant' ? 'fire' : payment.speed === 'express' ? 'warning' : 'default'}>
+                          {payment.speed === 'instant' && <Icons.Zap />}
+                          {payment.speed === 'instant' ? 'Instant' : payment.speed === 'express' ? 'Express' : 'Standard'}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <Badge variant={payment.status === 'completed' ? 'success' : payment.status === 'processing' ? 'warning' : 'info'}>
+                          {payment.status === 'completed' ? '✓ Paid' : payment.status === 'processing' ? 'Processing' : 'Scheduled'}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="text-white text-sm">{payment.date}</div>
+                        <div className="text-navy-400 text-xs">{payment.time}</div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <button className="p-2 hover:bg-white/10 rounded-lg transition-colors text-navy-400 hover:text-white" onClick={() => setDetailModal({ type: 'payment', data: { ...payment, contractor: c } })}>
+                          <Icons.MoreHorizontal />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+
+      // Compliance View
+      const ComplianceView = () => (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="grid grid-cols-3 gap-5">
+            <StatCard icon={Icons.Document} label="W-9s Collected" value={`${stats.w9}/${contractors.length}`} delay="delay-1" />
+            <StatCard icon={Icons.Shield} label="TINs Verified" value={`${contractors.filter(c => c.tin === 'verified').length}/${contractors.length}`} delay="delay-2" />
+            <StatCard icon={Icons.Document} label="1099s to File" value={contractors.filter(c => c.paid >= 600).length} sub="Threshold: $600+" delay="delay-3" />
+          </div>
+          <div className="glass rounded-2xl border border-white/10 overflow-hidden">
+            <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white">1099 Preparation</h3>
+              <div className="flex gap-3">
+                <Button variant="secondary" icon={Icons.Upload} size="sm">Import W-9s</Button>
+                <Button icon={Icons.Download}>Generate 1099s</Button>
+              </div>
+            </div>
+            <table className="w-full">
+              <thead className="bg-white/5 border-b border-white/10">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-navy-300 uppercase">Contractor</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-navy-300 uppercase">YTD Paid</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-navy-300 uppercase">W-9</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-navy-300 uppercase">TIN Match</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-navy-300 uppercase">Status</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-navy-300 uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
                 {contractors.filter(c => c.paid >= 600).map(c => (
-                  <tr key={c.id} className="hover:bg-ink-50/50">
+                  <tr key={c.id} className="hover:bg-white/5">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center text-white text-xs font-bold`}>{c.name.split(' ').map(n => n[0]).join('')}</div>
-                        <div><div className="font-medium text-ink-900">{c.name}</div><div className="text-xs text-ink-400">{c.company}</div></div>
+                        <Avatar name={c.name} size="sm" />
+                        <div>
+                          <div className="font-medium text-white">{c.name}</div>
+                          <div className="text-xs text-navy-400">{c.company}</div>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right font-mono font-semibold text-ink-900">${c.paid.toLocaleString()}</td>
-                    <td className="px-6 py-4 text-center"><span className={`${c.w9 === 'collected' ? 'text-mint-600' : 'text-gold-600'}`}>{c.w9 === 'collected' ? '✓' : '●'}</span></td>
-                    <td className="px-6 py-4 text-center"><span className={`${c.tin === 'verified' ? 'text-mint-600' : 'text-gold-600'}`}>{c.tin === 'verified' ? '✓' : '●'}</span></td>
+                    <td className="px-6 py-4 text-right font-mono font-semibold text-white">${c.paid.toLocaleString()}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${c.w9 === 'collected' && c.tin === 'verified' ? 'bg-mint-100 text-mint-700' : 'bg-gold-100 text-gold-700'}`}>
-                        {c.w9 === 'collected' && c.tin === 'verified' ? 'Ready' : 'Incomplete'}
-                      </span>
+                      <Badge variant={c.w9 === 'collected' ? 'success' : 'warning'}>{c.w9 === 'collected' ? '✓ Collected' : 'Missing'}</Badge>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <Badge variant={c.tin === 'verified' ? 'success' : 'warning'}>{c.tin === 'verified' ? '✓ Verified' : 'Pending'}</Badge>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <Badge variant={c.w9 === 'collected' && c.tin === 'verified' ? 'success' : 'warning'}>
+                        {c.w9 === 'collected' && c.tin === 'verified' ? '✓ Ready' : 'Incomplete'}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <Button variant="ghost" size="sm">View</Button>
                     </td>
                   </tr>
                 ))}
@@ -480,36 +684,60 @@
         </div>
       );
 
+      // Projects View
       const ProjectsView = () => (
-        <div className="space-y-4 animate-fade-in">
+        <div className="space-y-5 animate-fadeIn">
+          <div className="flex items-center justify-between">
+            <div className="relative">
+              <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search projects..."
+                className="pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-navy-400 focus:outline-none focus:border-fire-500 w-80"
+              />
+            </div>
+            <Button icon={Icons.Plus}>New Project</Button>
+          </div>
           {projects.map((project, i) => (
-            <div key={project.id} className={`glass rounded-2xl border border-ink-200/50 overflow-hidden hover-lift animate-slide-up opacity-0 stagger-${i + 1}`}>
-              <div className="px-6 py-5 flex items-center justify-between border-b border-ink-200/50">
+            <div key={project.id} className={`glass rounded-2xl border border-white/10 overflow-hidden hover-lift animate-slideUp delay-${Math.min(i + 1, 3)}`}>
+              <div className="px-6 py-5 flex items-center justify-between border-b border-white/10">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${verticals[project.vertical].gradient} flex items-center justify-center text-white text-xl font-display`}>
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${verticals[project.vertical].color} flex items-center justify-center text-white text-2xl`}>
                     {verticals[project.vertical].icon}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-ink-900 text-lg">{project.name}</h3>
-                    <p className="text-sm text-ink-500">{project.client} · {verticals[project.vertical].name}</p>
+                    <h3 className="font-semibold text-white text-lg">{project.name}</h3>
+                    <p className="text-sm text-navy-400">{project.client} · {verticals[project.vertical].name}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-mono text-xl text-ink-900">${project.spent.toLocaleString()} <span className="text-ink-400 text-sm">/ ${project.budget.toLocaleString()}</span></div>
-                  <div className="text-sm text-ink-500">Escrow: ${(project.funded - project.spent).toLocaleString()}</div>
+                  <div className="font-mono text-xl text-white">${project.spent.toLocaleString()} <span className="text-navy-400 text-sm">/ ${project.budget.toLocaleString()}</span></div>
+                  <div className="text-sm text-navy-400">Escrow: ${(project.funded - project.spent).toLocaleString()}</div>
                 </div>
               </div>
               <div className="p-6">
-                <div className="h-3 bg-ink-100 rounded-full overflow-hidden mb-4">
-                  <div className={`h-full bg-gradient-to-r ${verticals[project.vertical].gradient} rounded-full`} style={{ width: `${(project.spent / project.budget) * 100}%` }} />
+                <div className="relative h-3 bg-white/10 rounded-full overflow-hidden mb-6">
+                  <div className={`absolute inset-y-0 left-0 bg-gradient-to-r ${verticals[project.vertical].color} rounded-full`} style={{ width: `${(project.spent / project.budget) * 100}%` }} />
                 </div>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-4 gap-4">
                   {project.milestones.map(m => (
-                    <div key={m.id} onClick={() => m.status === 'in_progress' && setApproveModal({ project, milestone: m })} className={`p-4 rounded-xl border text-center cursor-pointer transition-all ${m.status === 'completed' ? 'bg-mint-50 border-mint-200' : m.status === 'in_progress' ? 'bg-gold-50 border-gold-200 hover:border-gold-400 hover:shadow-md' : 'bg-ink-50 border-ink-200'}`}>
-                      <div className="text-sm font-medium text-ink-700 mb-1">{m.name}</div>
-                      <div className="font-mono font-semibold text-ink-900">${m.amount.toLocaleString()}</div>
-                      <div className="text-lg mt-1">{m.status === 'completed' ? '✓' : m.status === 'in_progress' ? '●' : '○'}</div>
-                    </div>
+                    <button
+                      key={m.id}
+                      onClick={() => m.status === 'in_progress' && setApproveModal({ project, milestone: m })}
+                      className={`p-4 rounded-xl border text-center transition-all ${
+                        m.status === 'completed'
+                          ? 'bg-success-500/10 border-success-500/30'
+                          : m.status === 'in_progress'
+                            ? 'bg-fire-500/10 border-fire-500/30 hover:border-fire-500 hover:shadow-lg hover:shadow-fire-500/20 cursor-pointer'
+                            : 'bg-white/5 border-white/10'
+                      }`}
+                    >
+                      <div className="text-sm font-medium text-white mb-1">{m.name}</div>
+                      <div className="font-mono font-semibold text-white">${m.amount.toLocaleString()}</div>
+                      <div className={`text-lg mt-2 ${m.status === 'completed' ? 'text-success-400' : m.status === 'in_progress' ? 'text-fire-400' : 'text-navy-500'}`}>
+                        {m.status === 'completed' ? '✓' : m.status === 'in_progress' ? '●' : '○'}
+                      </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -518,42 +746,192 @@
         </div>
       );
 
-      const views = { dashboard: DashboardView, projects: ProjectsView, contractors: ContractorsView, payments: PaymentsView, compliance: ComplianceView };
+      // Invoices View
+      const InvoicesView = () => (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-white">Invoice Management</h3>
+            <div className="flex gap-3">
+              <Button variant="secondary" icon={Icons.Upload}>Upload Invoice</Button>
+              <Button icon={Icons.Plus}>Create Invoice</Button>
+            </div>
+          </div>
+          <div className="glass rounded-2xl border border-white/10 p-12 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-fire-500/20 flex items-center justify-center text-fire-400 mx-auto mb-4">
+              <Icons.Invoices className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">Invoice OCR Coming Soon</h3>
+            <p className="text-navy-400 max-w-md mx-auto mb-6">Upload contractor invoices and we'll automatically extract payment details using AI-powered OCR.</p>
+            <Button variant="secondary">Join Waitlist</Button>
+          </div>
+        </div>
+      );
+
+      // Settings View
+      const SettingsView = () => (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="glass rounded-2xl border border-white/10 overflow-hidden">
+            <div className="px-6 py-5 border-b border-white/10">
+              <h3 className="text-lg font-semibold text-white">Account Settings</h3>
+            </div>
+            <div className="p-6 space-y-6">
+              <div className="flex items-center justify-between py-4 border-b border-white/10">
+                <div>
+                  <div className="font-medium text-white">Company Name</div>
+                  <div className="text-sm text-navy-400">Your business display name</div>
+                </div>
+                <Button variant="secondary" size="sm">Edit</Button>
+              </div>
+              <div className="flex items-center justify-between py-4 border-b border-white/10">
+                <div>
+                  <div className="font-medium text-white">Payment Methods</div>
+                  <div className="text-sm text-navy-400">Manage your funding sources</div>
+                </div>
+                <Button variant="secondary" size="sm">Manage</Button>
+              </div>
+              <div className="flex items-center justify-between py-4 border-b border-white/10">
+                <div>
+                  <div className="font-medium text-white">Notifications</div>
+                  <div className="text-sm text-navy-400">Email and SMS preferences</div>
+                </div>
+                <Button variant="secondary" size="sm">Configure</Button>
+              </div>
+              <div className="flex items-center justify-between py-4">
+                <div>
+                  <div className="font-medium text-white">API Access</div>
+                  <div className="text-sm text-navy-400">Manage API keys and webhooks</div>
+                </div>
+                <Button variant="secondary" size="sm">View Keys</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      const views = {
+        dashboard: DashboardView,
+        projects: ProjectsView,
+        contractors: ContractorsView,
+        payments: PaymentsView,
+        invoices: InvoicesView,
+        compliance: ComplianceView,
+        settings: SettingsView,
+      };
       const CurrentView = views[view];
 
       return (
-        <div className="w-full max-w-7xl mx-auto">
-          <div className="glass rounded-3xl overflow-hidden border border-ink-200/50 shadow-2xl">
-            <div className="flex h-[720px]">
+        <div className="w-full max-w-[1400px] mx-auto">
+          <div className="glass rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+            <div className="flex h-[800px]">
               {/* Sidebar */}
-              <div className="w-20 bg-ink-900/95 backdrop-blur-xl flex flex-col items-center py-6 border-r border-ink-800">
-                <div className="w-12 h-12 bg-gradient-to-br from-electric-400 to-mint-500 rounded-2xl flex items-center justify-center mb-8 animate-glow">
-                  <span className="text-white text-2xl font-display">P</span>
+              <div className="w-72 bg-navy-900/80 backdrop-blur-xl flex flex-col border-r border-white/10">
+                {/* Logo */}
+                <div className="p-6 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src="https://res.cloudinary.com/dmgkjnefr/image/upload/v1764348601/ChatGPT_Image_Nov_28_2025_11_48_43_AM_kyjj3o.png"
+                      alt="PayoutMate"
+                      className="w-10 h-10 rounded-xl object-contain"
+                    />
+                    <div>
+                      <div className="font-bold text-white text-lg">PayoutMate</div>
+                      <div className="text-xs text-navy-400">Contractor Payments</div>
+                    </div>
+                  </div>
                 </div>
-                <nav className="flex flex-col items-center gap-2 flex-1">
+
+                {/* Navigation */}
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-thin">
                   {navItems.map(item => (
-                    <button key={item.id} onClick={() => setView(item.id)} className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all text-xl ${view === item.id ? 'bg-white/10 text-white' : 'text-ink-500 hover:text-ink-300 hover:bg-white/5'}`} title={item.label}>
-                      {item.icon}
+                    <button
+                      key={item.id}
+                      onClick={() => setView(item.id)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left ${
+                        view === item.id
+                          ? 'bg-fire-500/20 text-fire-400'
+                          : 'text-navy-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <item.icon />
+                      <span className="font-medium">{item.label}</span>
+                      {item.id === 'payments' && stats.pending > 0 && (
+                        <span className="ml-auto bg-fire-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{stats.pending}</span>
+                      )}
                     </button>
                   ))}
                 </nav>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-coral-400 to-coral-600 flex items-center justify-center text-white text-sm font-bold">JD</div>
+
+                {/* User */}
+                <div className="p-4 border-t border-white/10">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer">
+                    <Avatar name="John Doe" size="md" />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-white text-sm truncate">John Doe</div>
+                      <div className="text-xs text-navy-400 truncate">john@company.com</div>
+                    </div>
+                    <Icons.ChevronRight className="text-navy-400" />
+                  </div>
+                </div>
               </div>
 
-              {/* Main */}
-              <div className="flex-1 flex flex-col bg-ink-50/50">
-                <div className="px-8 py-6 border-b border-ink-200/50 bg-white/50 backdrop-blur-sm flex items-center justify-between">
+              {/* Main Content */}
+              <div className="flex-1 flex flex-col bg-navy-950/50">
+                {/* Header */}
+                <div className="px-8 py-5 border-b border-white/10 bg-navy-900/30 backdrop-blur-sm flex items-center justify-between">
                   <div>
-                    <h1 className="font-display text-3xl text-ink-900 capitalize">{view}</h1>
-                    <p className="text-ink-500">Contractor payments & compliance</p>
+                    <h1 className="text-2xl font-bold text-white capitalize">{view === 'dashboard' ? 'Welcome back' : view}</h1>
+                    <p className="text-navy-400 text-sm">Manage your contractor payments and compliance</p>
                   </div>
-                  {view === 'dashboard' && (
-                    <button onClick={() => setPayModal(true)} className="px-6 py-3 bg-gradient-to-r from-electric-500 to-mint-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-electric-500/25 transition-all hover:-translate-y-0.5 flex items-center gap-2">
-                      <span className="text-lg">+</span> Pay Contractor
-                    </button>
-                  )}
+                  <div className="flex items-center gap-4">
+                    {/* Search */}
+                    <div className="relative">
+                      <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        placeholder="Search..."
+                        className="pl-9 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-navy-400 focus:outline-none focus:border-fire-500 w-48 text-sm"
+                      />
+                    </div>
+
+                    {/* Notifications */}
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowNotifications(!showNotifications)}
+                        className="relative p-2.5 rounded-xl hover:bg-white/10 transition-colors text-navy-300 hover:text-white"
+                      >
+                        <Icons.Bell />
+                        <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-fire-500 rounded-full animate-pulse" />
+                      </button>
+                      {showNotifications && (
+                        <div className="absolute right-0 top-full mt-2 w-80 glass rounded-xl border border-white/10 shadow-2xl overflow-hidden animate-slideDown z-50">
+                          <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+                            <span className="font-semibold text-white">Notifications</span>
+                            <Badge>{notifications.length} new</Badge>
+                          </div>
+                          <div className="max-h-80 overflow-y-auto">
+                            {notifications.map(n => (
+                              <div key={n.id} className="px-4 py-3 hover:bg-white/5 border-b border-white/5 last:border-0 cursor-pointer">
+                                <div className="text-sm text-white">{n.msg}</div>
+                                <div className="text-xs text-navy-400 mt-1">{n.time}</div>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="px-4 py-3 border-t border-white/10">
+                            <Button variant="ghost" size="sm" className="w-full">View all notifications</Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Pay Button */}
+                    <Button onClick={() => setPayModal(true)} icon={Icons.Zap}>
+                      Quick Pay
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex-1 overflow-y-auto p-8 scrollbar-hidden">
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-8 scrollbar-thin">
                   <CurrentView />
                 </div>
               </div>
@@ -561,55 +939,231 @@
           </div>
 
           {/* Pay Modal */}
-          <Modal open={payModal} onClose={() => setPayModal(false)} title="Pay Contractor">
+          <Modal open={payModal} onClose={() => setPayModal(false)} title="Send Payment">
             <form onSubmit={handlePay} className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-ink-700 mb-2">Contractor</label>
-                <select value={payForm.contractor} onChange={e => setPayForm({ ...payForm, contractor: e.target.value })} required className="w-full px-4 py-3 border border-ink-200 rounded-xl focus:ring-2 focus:ring-electric-500 focus:border-transparent outline-none bg-white">
-                  <option value="">Select...</option>
-                  {contractors.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                <label className="block text-sm font-semibold text-navy-200 mb-2">Contractor</label>
+                <select
+                  value={payForm.contractor}
+                  onChange={e => setPayForm({ ...payForm, contractor: e.target.value })}
+                  required
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-fire-500"
+                >
+                  <option value="" className="bg-navy-900">Select contractor...</option>
+                  {contractors.map(c => <option key={c.id} value={c.id} className="bg-navy-900">{c.name} - {c.company}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-ink-700 mb-2">Amount</label>
+                <label className="block text-sm font-semibold text-navy-200 mb-2">Amount</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-400 font-mono">$</span>
-                  <input type="number" value={payForm.amount} onChange={e => setPayForm({ ...payForm, amount: e.target.value })} required min="1" className="w-full pl-8 pr-4 py-3 border border-ink-200 rounded-xl focus:ring-2 focus:ring-electric-500 outline-none font-mono" placeholder="0.00" />
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-navy-400 font-mono">$</span>
+                  <input
+                    type="number"
+                    value={payForm.amount}
+                    onChange={e => setPayForm({ ...payForm, amount: e.target.value })}
+                    required
+                    min="1"
+                    className="w-full pl-8 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-mono focus:outline-none focus:border-fire-500"
+                    placeholder="0.00"
+                  />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-ink-700 mb-2">Payout Speed</label>
+                <label className="block text-sm font-semibold text-navy-200 mb-2">Description</label>
+                <input
+                  type="text"
+                  value={payForm.desc}
+                  onChange={e => setPayForm({ ...payForm, desc: e.target.value })}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-fire-500"
+                  placeholder="Payment for..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-navy-200 mb-3">Payout Speed</label>
                 <div className="grid grid-cols-3 gap-3">
-                  {[{ id: 'standard', label: 'Standard', sub: '7 days · Free' }, { id: 'express', label: 'Express', sub: '24 hrs · $24.99' }, { id: 'instant', label: 'Instant', sub: '< 30s · 2%' }].map(opt => (
-                    <button key={opt.id} type="button" onClick={() => setPayForm({ ...payForm, speed: opt.id })} className={`p-4 rounded-xl border-2 transition-all text-left ${payForm.speed === opt.id ? 'border-electric-500 bg-electric-50' : 'border-ink-200 hover:border-ink-300'}`}>
-                      <div className="font-semibold text-ink-900">{opt.label}</div>
-                      <div className="text-xs text-ink-500">{opt.sub}</div>
+                  {[
+                    { id: 'standard', label: 'Standard', sub: '5-7 days', fee: 'Free' },
+                    { id: 'express', label: 'Express', sub: '24 hours', fee: '$24.99' },
+                    { id: 'instant', label: 'Instant', sub: '< 30 sec', fee: '2%' },
+                  ].map(opt => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setPayForm({ ...payForm, speed: opt.id })}
+                      className={`p-4 rounded-xl border-2 transition-all text-left ${
+                        payForm.speed === opt.id
+                          ? 'border-fire-500 bg-fire-500/10'
+                          : 'border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <div className="font-semibold text-white flex items-center gap-2">
+                        {opt.id === 'instant' && <Icons.Zap className="text-fire-400" />}
+                        {opt.label}
+                      </div>
+                      <div className="text-xs text-navy-400 mt-1">{opt.sub}</div>
+                      <div className="text-sm font-mono text-fire-400 mt-2">{opt.fee}</div>
                     </button>
                   ))}
                 </div>
               </div>
               <div className="pt-4 flex gap-3">
-                <button type="button" onClick={() => setPayModal(false)} className="flex-1 px-6 py-3 border border-ink-200 text-ink-700 rounded-xl hover:bg-ink-50 font-semibold">Cancel</button>
-                <button type="submit" className="flex-1 px-6 py-3 bg-gradient-to-r from-electric-500 to-mint-500 text-white rounded-xl font-semibold hover:shadow-lg">Send</button>
+                <Button type="button" variant="secondary" onClick={() => setPayModal(false)} className="flex-1">Cancel</Button>
+                <Button type="submit" className="flex-1" icon={Icons.ArrowRight}>Send Payment</Button>
               </div>
             </form>
           </Modal>
 
           {/* Approve Modal */}
-          <Modal open={!!approveModal} onClose={() => setApproveModal(null)} title="Approve & Pay">
+          <Modal open={!!approveModal} onClose={() => setApproveModal(null)} title="Approve Milestone">
             {approveModal && (
-              <div className="space-y-5">
-                <div className="bg-ink-50 rounded-xl p-5">
-                  <div className="text-ink-600 mb-1">{approveModal.milestone.name}</div>
-                  <div className="font-display text-4xl text-ink-900">${approveModal.milestone.amount.toLocaleString()}</div>
+              <div className="space-y-6">
+                <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                  <div className="text-navy-300 mb-2">{approveModal.project.name}</div>
+                  <div className="text-xl font-semibold text-white mb-4">{approveModal.milestone.name}</div>
+                  <div className="font-mono text-4xl text-white">${approveModal.milestone.amount.toLocaleString()}</div>
+                  <div className="text-sm text-navy-400 mt-2">Will be released from escrow</div>
                 </div>
-                <div className="space-y-2">
-                  {[{ id: 'standard', label: 'Standard (7 days)', fee: 'Free' }, { id: 'express', label: 'Express (24 hours)', fee: '$24.99' }, { id: 'instant', label: 'Instant (< 30 sec)', fee: `$${(approveModal.milestone.amount * 0.02).toFixed(2)}` }].map(opt => (
-                    <button key={opt.id} onClick={() => handleApprove(opt.id)} className="w-full p-5 rounded-xl border-2 border-ink-200 hover:border-electric-500 hover:bg-electric-50 transition-all flex items-center justify-between">
-                      <span className="font-semibold text-ink-900">{opt.label}</span>
-                      <span className="font-mono text-ink-600">{opt.fee}</span>
-                    </button>
-                  ))}
+                <div>
+                  <label className="block text-sm font-semibold text-navy-200 mb-3">Choose Payout Speed</label>
+                  <div className="space-y-3">
+                    {[
+                      { id: 'standard', label: 'Standard', sub: '5-7 business days', fee: 'Free' },
+                      { id: 'express', label: 'Express', sub: '24 hours', fee: '$24.99' },
+                      { id: 'instant', label: 'Instant', sub: 'Less than 30 seconds', fee: `$${(approveModal.milestone.amount * 0.02).toFixed(2)} (2%)` },
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => handleApprove(opt.id)}
+                        className="w-full p-5 rounded-xl border-2 border-white/10 hover:border-fire-500 hover:bg-fire-500/10 transition-all flex items-center justify-between group"
+                      >
+                        <div className="flex items-center gap-3">
+                          {opt.id === 'instant' && <Icons.Zap className="text-fire-400" />}
+                          <div className="text-left">
+                            <span className="font-semibold text-white">{opt.label}</span>
+                            <div className="text-sm text-navy-400">{opt.sub}</div>
+                          </div>
+                        </div>
+                        <span className="font-mono text-fire-400">{opt.fee}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </Modal>
+
+          {/* Detail Modal */}
+          <Modal open={!!detailModal} onClose={() => setDetailModal(null)} title={detailModal?.type === 'contractor' ? 'Contractor Details' : detailModal?.type === 'payment' ? 'Payment Details' : 'Project Details'} size="lg">
+            {detailModal?.type === 'contractor' && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <Avatar name={detailModal.data.name} size="lg" />
+                  <div>
+                    <div className="text-xl font-semibold text-white">{detailModal.data.name}</div>
+                    <div className="text-navy-400">{detailModal.data.company}</div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <div className="text-sm text-navy-400 mb-1">Email</div>
+                    <div className="text-white font-mono">{detailModal.data.email}</div>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <div className="text-sm text-navy-400 mb-1">Total Paid</div>
+                    <div className="text-white font-mono text-xl">${detailModal.data.paid.toLocaleString()}</div>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Badge variant={detailModal.data.w9 === 'collected' ? 'success' : 'warning'} size="md">
+                    W-9 {detailModal.data.w9 === 'collected' ? 'Collected' : 'Missing'}
+                  </Badge>
+                  <Badge variant={detailModal.data.tin === 'verified' ? 'success' : 'warning'} size="md">
+                    TIN {detailModal.data.tin === 'verified' ? 'Verified' : 'Pending'}
+                  </Badge>
+                </div>
+                <div className="flex gap-3 pt-4">
+                  <Button variant="secondary" className="flex-1" icon={Icons.Document}>View W-9</Button>
+                  <Button className="flex-1" icon={Icons.Zap} onClick={() => { setDetailModal(null); setPayForm({ ...payForm, contractor: String(detailModal.data.id) }); setPayModal(true); }}>Send Payment</Button>
+                </div>
+              </div>
+            )}
+            {detailModal?.type === 'payment' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <Avatar name={detailModal.data.contractor?.name || 'NA'} size="lg" />
+                    <div>
+                      <div className="text-xl font-semibold text-white">{detailModal.data.contractor?.name}</div>
+                      <div className="text-navy-400">{detailModal.data.desc}</div>
+                    </div>
+                  </div>
+                  <Badge variant={detailModal.data.status === 'completed' ? 'success' : detailModal.data.status === 'processing' ? 'warning' : 'info'} size="md">
+                    {detailModal.data.status === 'completed' ? '✓ Paid' : detailModal.data.status === 'processing' ? 'Processing' : 'Scheduled'}
+                  </Badge>
+                </div>
+                <div className="bg-white/5 rounded-xl p-6 text-center">
+                  <div className="font-mono text-4xl text-white">${detailModal.data.amount.toLocaleString()}</div>
+                  <div className="text-navy-400 mt-2">{detailModal.data.date} at {detailModal.data.time}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <div className="text-sm text-navy-400 mb-1">Speed</div>
+                    <Badge variant={detailModal.data.speed === 'instant' ? 'fire' : detailModal.data.speed === 'express' ? 'warning' : 'default'}>
+                      {detailModal.data.speed === 'instant' && <Icons.Zap />}
+                      {detailModal.data.speed.charAt(0).toUpperCase() + detailModal.data.speed.slice(1)}
+                    </Badge>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <div className="text-sm text-navy-400 mb-1">Transaction ID</div>
+                    <div className="text-white font-mono text-sm">TXN-{detailModal.data.id}</div>
+                  </div>
+                </div>
+                <div className="flex gap-3 pt-4">
+                  <Button variant="secondary" className="flex-1" icon={Icons.Download}>Download Receipt</Button>
+                  <Button variant="secondary" className="flex-1" icon={Icons.ExternalLink}>View in Bank</Button>
+                </div>
+              </div>
+            )}
+            {detailModal?.type === 'project' && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${verticals[detailModal.data.vertical].color} flex items-center justify-center text-white text-2xl`}>
+                    {verticals[detailModal.data.vertical].icon}
+                  </div>
+                  <div>
+                    <div className="text-xl font-semibold text-white">{detailModal.data.name}</div>
+                    <div className="text-navy-400">{detailModal.data.client}</div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <div className="text-sm text-navy-400 mb-1">Budget</div>
+                    <div className="text-white font-mono text-xl">${detailModal.data.budget.toLocaleString()}</div>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <div className="text-sm text-navy-400 mb-1">Spent</div>
+                    <div className="text-white font-mono text-xl">${detailModal.data.spent.toLocaleString()}</div>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <div className="text-sm text-navy-400 mb-1">In Escrow</div>
+                    <div className="text-success-400 font-mono text-xl">${(detailModal.data.funded - detailModal.data.spent).toLocaleString()}</div>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-navy-200 mb-3">Milestones</div>
+                  <div className="space-y-2">
+                    {detailModal.data.milestones.map(m => (
+                      <div key={m.id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${m.status === 'completed' ? 'bg-success-500/20 text-success-400' : m.status === 'in_progress' ? 'bg-fire-500/20 text-fire-400' : 'bg-white/10 text-navy-400'}`}>
+                            {m.status === 'completed' ? '✓' : m.status === 'in_progress' ? '●' : '○'}
+                          </div>
+                          <span className="text-white">{m.name}</span>
+                        </div>
+                        <span className="font-mono text-white">${m.amount.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -617,7 +1171,7 @@
 
           {/* Toasts */}
           <div className="fixed bottom-6 right-6 space-y-3 z-50">
-            {toasts.map(t => <Toast key={t.id} msg={t.msg} onClose={() => setToasts(prev => prev.filter(x => x.id !== t.id))} />)}
+            {toasts.map(t => <Toast key={t.id} msg={t.msg} type={t.type} onClose={() => setToasts(prev => prev.filter(x => x.id !== t.id))} />)}
           </div>
         </div>
       );
